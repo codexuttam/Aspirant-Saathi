@@ -1,0 +1,58 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import "./App.css";
+
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Submit from "./pages/Submit";
+import PrivateRoute from "./components/PrivateRoute";
+import Dashboard from "./pages/Dashboard";
+import AttemptDetails from "./pages/AttemptDetails";
+
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Toaster position="top-center" reverseOrder={false} />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* 🔒 Dashboard (Protected) */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        {/* 🔒 Protected Route */}
+        <Route
+          path="/submit"
+          element={
+            <PrivateRoute>
+              <Submit />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+
+          path="/attempt/:id"
+          element={
+            <PrivateRoute>
+              <AttemptDetails />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+

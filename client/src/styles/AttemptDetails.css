@@ -1,0 +1,72 @@
+.attempt-wrapper {
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+.attempt-container {
+  max-width: 900px;
+  margin: 40px auto;
+}
+
+.score-card {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  color: white;
+  padding: 30px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+}
+
+.exam-tag {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.score {
+  font-size: 42px;
+  margin: 10px 0;
+}
+
+.status {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.2);
+}
+
+.card {
+  background: white;
+  padding: 22px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.answer-text {
+  white-space: pre-line;
+  line-height: 1.7;
+}
+
+.answer-image {
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 10px;
+}
+
+.structure-list,
+.marks-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.structure-list li,
+.marks-list li {
+  margin-bottom: 6px;
+}
+
+.feedback ul {
+  margin-left: 20px;
+}
+
+.feedback li {
+  margin-bottom: 8px;
+}
