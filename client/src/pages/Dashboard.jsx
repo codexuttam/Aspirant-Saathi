@@ -17,8 +17,40 @@ export default function Dashboard() {
 
   // Derived stats
   const totalAnswers = attempts.length;
-  const averageScore = "-"; // placeholder for evaluation phase
-  const streak = "0 Days"; // can be computed later
+  // Calculate Average Score
+  const evaluatedAttempts = attempts.filter(
+    (a) => a.status === "evaluated" && a.evaluation
+  );
+  const totalScore = evaluatedAttempts.reduce(
+    (sum, a) => sum + (a.evaluation.totalMarks || 0),
+    0
+  );
+  const averageScore =
+    evaluatedAttempts.length > 0
+      ? (totalScore / evaluatedAttempts.length).toFixed(1)
+      : "-";
+
+  // Calculate Streak
+  const uniqueDates = new Set(
+    attempts.map((a) => new Date(a.createdAt).toDateString())
+  );
+
+  let streakCount = 0;
+  let d = new Date();
+
+  // If today is not recorded, check yesterday to continue streak
+  if (!uniqueDates.has(d.toDateString())) {
+    d.setDate(d.getDate() - 1);
+  }
+
+  if (uniqueDates.has(d.toDateString())) {
+    while (uniqueDates.has(d.toDateString())) {
+      streakCount++;
+      d.setDate(d.getDate() - 1);
+    }
+  }
+
+  const streak = `${streakCount} Days`;
   const focusArea = attempts[0]?.exam || "UPSC";
 
   return (

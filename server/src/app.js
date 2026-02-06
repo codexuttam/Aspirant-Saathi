@@ -18,15 +18,9 @@ app.use(express.json());
 // Serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-// MongoDB connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB connected");
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+// Note: MongoDB connection is performed in server.js before starting the HTTP server.
+// This file only defines the Express app and routes so the server can decide when
+// to start listening (after DB connection is established).
 
 // Routes
 app.use("/api/auth", authRoutes);   // public auth routes

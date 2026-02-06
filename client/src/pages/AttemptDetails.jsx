@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
+import ScoreCard from "../components/ScoreCard";
+import FeedbackPanel from "../components/FeedbackPanel";
 import "../styles/AttemptDetails.css";
 
 export default function AttemptDetails() {
@@ -18,25 +20,14 @@ export default function AttemptDetails() {
   if (loading) return <p className="center">Loading evaluation…</p>;
   if (!attempt) return <p className="center">Attempt not found</p>;
 
-  const { evaluation, structureAnalysis } = attempt;
+
 
   return (
     <div className="attempt-wrapper">
       <Navbar />
 
       <div className="attempt-container">
-        {/* SCORE HEADER */}
-        <div className="score-card">
-          <div>
-            <span className="exam-tag">{attempt.exam}</span>
-            <h1 className="score">
-              {evaluation?.totalMarks ?? "-"} / {evaluation?.maxMarks ?? 10}
-            </h1>
-            <span className={`status ${attempt.status}`}>
-              {attempt.status.toUpperCase()}
-            </span>
-          </div>
-        </div>
+        <ScoreCard attempt={attempt} />
 
         {/* QUESTION */}
         <section className="card">
@@ -58,39 +49,7 @@ export default function AttemptDetails() {
           )}
         </section>
 
-        {/* STRUCTURE ANALYSIS */}
-        <section className="card">
-          <h3>Structure Analysis</h3>
-          <ul className="structure-list">
-            <li>Introduction: {structureAnalysis.intro.present ? "✔️" : "❌"}</li>
-            <li>Body: {structureAnalysis.body.present ? "✔️" : "❌"}</li>
-            <li>Conclusion: {structureAnalysis.conclusion.present ? "✔️" : "❌"}</li>
-          </ul>
-        </section>
-
-        {/* MARKS BREAKUP */}
-        {evaluation && (
-          <section className="card">
-            <h3>Marks Breakup</h3>
-            <ul className="marks-list">
-              <li>Introduction: {evaluation.breakup.introduction}</li>
-              <li>Body: {evaluation.breakup.body}</li>
-              <li>Conclusion: {evaluation.breakup.conclusion}</li>
-            </ul>
-          </section>
-        )}
-
-        {/* EXAMINER FEEDBACK */}
-        {evaluation && (
-          <section className="card feedback">
-            <h3>Examiner Feedback</h3>
-            <ul>
-              {evaluation.feedback.map((f, i) => (
-                <li key={i}>{f}</li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <FeedbackPanel attempt={attempt} />
       </div>
     </div>
   );

@@ -1,6 +1,10 @@
 import { useState } from "react";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
+import ExamSelector from "../components/ExamSelector";
+import QuestionInput from "../components/QuestionInput";
+import AnswerUploader from "../components/AnswerUploader";
+import { countWords } from "../utils/wordCounter";
 import "../styles/Submit.css";
 
 export default function Submit() {
@@ -56,35 +60,19 @@ export default function Submit() {
                     <div className="form-grid">
 
                         {/* Exam Selection */}
-                        <div className="form-group">
-                            <label className="form-label">Exam Category</label>
-                            <select
-                                className="form-select"
-                                value={exam}
-                                onChange={(e) => setExam(e.target.value)}
-                            >
-                                <option value="UPSC">UPSC (Civil Services)</option>
-                                <option value="CAPF">CAPF</option>
-                                <option value="IB">IB</option>
-                                <option value="State PSC">State PSC</option>
-                            </select>
-                        </div>
+                        <ExamSelector exam={exam} setExam={setExam} />
 
                         {/* Question Input */}
-                        <div className="form-group">
-                            <label className="form-label">Question</label>
-                            <textarea
-                                className="form-textarea"
-                                rows="3"
-                                value={question}
-                                onChange={(e) => setQuestion(e.target.value)}
-                                placeholder="Enter the exact question here..."
-                            />
-                        </div>
+                        <QuestionInput question={question} setQuestion={setQuestion} />
 
                         {/* Answer Input */}
                         <div className="form-group">
-                            <label className="form-label">Your Answer</label>
+                            <label className="form-label">
+                                Your Answer
+                                <span style={{ float: "right", fontSize: "0.85rem", color: "#64748b", fontWeight: "normal" }}>
+                                    {countWords(answer)} words
+                                </span>
+                            </label>
                             <textarea
                                 className="form-textarea"
                                 rows="10"
@@ -97,32 +85,7 @@ export default function Submit() {
                         <div className="divider">OR UPLOAD IMAGE</div>
 
                         {/* File Upload */}
-                        <div className="form-group">
-                            <div className="file-upload-box">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="file-input"
-                                    onChange={(e) => setFile(e.target.files[0])}
-                                />
-                                <span className="upload-icon">📷</span>
-                                <p className="upload-text">
-                                    <span>Click to upload</span> or drag and drop<br />
-                                    handwritten answer image
-                                </p>
-                            </div>
-                            {file && (
-                                <div className="file-preview">
-                                    <span>📄 {file.name}</span>
-                                    <button
-                                        onClick={() => setFile(null)}
-                                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
-                                    >
-                                        ×
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                        <AnswerUploader file={file} setFile={setFile} />
 
                         <button
                             className="submit-btn"
