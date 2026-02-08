@@ -17,7 +17,7 @@ router.post(
   upload.single("answerImage"),
   async (req, res) => {
     try {
-      const { question, exam } = req.body;
+      const { question, exam, answerText } = req.body;
 
       // 🔒 Validation
       if (!question || !exam) {
@@ -26,17 +26,18 @@ router.post(
         });
       }
 
-      if (!req.file) {
+      if (!req.file && !answerText) {
         return res.status(400).json({
-          error: "Handwritten answer image is required",
+          error: "Either a handwritten answer image or answer text is required",
         });
       }
 
-      // 🧠 Gemini Vision Evaluation
+      // 🧠 Gemini Evaluation
       const evaluation = await evaluateFromImage({
-        imagePath: req.file.path,
+        imagePath: req.file ? req.file.path : null, // Handle optional file
         question,
         exam,
+        answerText, // Pass text
       });
 
       // 💾 Save attempt
@@ -44,8 +45,10 @@ router.post(
         userId: req.userId,
         exam,
         question,
-        imagePath: req.file.path,
+        imagePath: req.file ? req.file.path : null, // Handle optional file
+        answerText, // Save text
         status: "evaluated",
+        structureAnalysis: evaluation.structureAnalysis, // Save structure metadata
         evaluation,
       });
 

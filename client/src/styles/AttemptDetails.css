@@ -1,72 +1,328 @@
+/* Google Fonts Import in Index.css or here if supported */
+
+/* GLOBAL & WRAPPER */
 .attempt-wrapper {
-  background: #f5f7fb;
+  background: #f8fafc;
+  /* Slate-50 */
   min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1e293b;
+  /* Slate-800 */
 }
 
 .attempt-container {
-  max-width: 900px;
-  margin: 40px auto;
+  max-width: 1400px;
+  /* Increased max-width for side-by-side layout */
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* HERO SECTION - SCORE CARD */
+.score-hero {
+  margin-bottom: 40px;
 }
 
 .score-card {
-  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
   color: white;
-  padding: 30px;
-  border-radius: 16px;
-  margin-bottom: 30px;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.score-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.score-card>div {
+  position: relative;
+  z-index: 1;
 }
 
 .exam-tag {
-  font-size: 12px;
-  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .score {
-  font-size: 42px;
-  margin: 10px 0;
+  font-size: 5rem;
+  font-weight: 800;
+  line-height: 1;
+  margin: 15px 0;
+  letter-spacing: -2px;
 }
 
 .status {
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.2);
+  background: #10b981;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
+/* QA GRID (Top Section) */
+.qa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Split Question and Answer */
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+@media (max-width: 900px) {
+  .qa-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* DETAIL CARDS */
+.detail-card,
 .card {
   background: white;
-  padding: 22px;
-  border-radius: 14px;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  margin-bottom: 0px;
+  /* Remove margin as grid handles gap */
+  border: 1px solid #e2e8f0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  /* Fill grid cell height */
+}
+
+/* SECTION HEADERS */
+.section-header {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: #334155;
+  border-left: 5px solid #6366f1;
+  padding-left: 15px;
+}
+
+.section-title,
+.card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
   margin-bottom: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 12px;
+}
+
+/* ANSWER & QUESTION CONTENT */
+.question-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #334155;
+  font-weight: 500;
+}
+
+.answer-text-container {
+  background: #f8fafc;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px dashed #cbd5e1;
+  max-height: 600px;
+  overflow-y: auto;
 }
 
 .answer-text {
-  white-space: pre-line;
-  line-height: 1.7;
+  white-space: pre-wrap;
+  line-height: 1.8;
+  color: #475569;
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
 }
 
 .answer-image {
   width: 100%;
-  margin-top: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
 }
 
-.structure-list,
-.marks-list {
-  list-style: none;
-  padding-left: 0;
+/* FEEDBACK GRID (Bottom Section) */
+.feedback-grid {
+  display: grid;
+  /* Auto-fill columns, min 300px, but try to fit 2 or 4 perfectly */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+@media (min-width: 1400px) {
+  .feedback-grid {
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 in a row on very wide screens if beneficial, or keep 2x2 */
+  }
+}
+
+@media (max-width: 800px) {
+  .feedback-grid {
+    grid-template-columns: 1fr;
+    /* Stack on mobile */
+  }
+}
+
+/* FEEDBACK CARD STYLES */
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card ul {
+  flex-grow: 1;
+  /* List takes remaining space */
+}
+
+.feedback.strength {
+  border-top: 6px solid #10b981;
+  border-left: 0;
+}
+
+.feedback.strength h3 {
+  color: #059669;
+}
+
+.feedback.weakness {
+  border-top: 6px solid #ef4444;
+  border-left: 0;
+}
+
+.feedback.weakness h3 {
+  color: #dc2626;
+}
+
+.feedback.suggestion {
+  border-top: 6px solid #f59e0b;
+  border-left: 0;
+}
+
+.feedback.suggestion h3 {
+  color: #d97706;
 }
 
 .structure-list li,
-.marks-list li {
-  margin-bottom: 6px;
+.feedback ul li {
+  margin-bottom: 12px;
+  line-height: 1.5;
+  color: #475569;
 }
 
-.feedback ul {
-  margin-left: 20px;
+/* Additional CSS for Attempt Details Model Answer CTA */
+.model-answer-cta {
+  text-align: center;
+  margin-top: 60px;
+  padding: 40px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-.feedback li {
-  margin-bottom: 8px;
+.model-answer-btn {
+  display: inline-block;
+  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 16px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  margin-bottom: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.model-answer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.4);
+}
+
+.model-answer-cta p {
+  color: #cbd5e1;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Update to AttemptDetails.css for Exam Switcher */
+
+.exam-switcher-container {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  padding: 8px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+}
+
+.exam-switcher-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.exam-switcher-select {
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.exam-switcher-select:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.exam-switcher-select option {
+  background: #1e293b;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .exam-switcher-container {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-top: 20px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .score-card {
+    flex-direction: column;
+    padding-bottom: 20px;
+  }
 }

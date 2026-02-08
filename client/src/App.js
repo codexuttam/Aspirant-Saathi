@@ -9,6 +9,7 @@ import Submit from "./pages/Submit";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
 import AttemptDetails from "./pages/AttemptDetails";
+import ModelAnswer from "./pages/ModelAnswer";
 
 
 function App() {
@@ -41,11 +42,19 @@ function App() {
         />
 
         <Route
-
           path="/attempt/:id"
           element={
             <PrivateRoute>
               <AttemptDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/attempt/:id/model"
+          element={
+            <PrivateRoute>
+              <ModelAnswer />
             </PrivateRoute>
           }
         />
