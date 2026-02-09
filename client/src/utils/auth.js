@@ -21,4 +21,22 @@ export function logout() {
   window.location.href = "/login";
 }
 
-export default { isLoggedIn, logout };
+export function getUser() {
+  try {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+export function setUser(user) {
+  try {
+    localStorage.setItem("user", JSON.stringify(user));
+  } catch (e) {
+    // ignore
+  }
+}
+
+const authUtils = { isLoggedIn, logout, getUser, setUser };
+export default authUtils;

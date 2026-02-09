@@ -37,6 +37,7 @@ router.post(
         imagePath: req.file ? req.file.path : null, // Handle optional file
         question,
         exam,
+        marks: req.body.marks || 10,
         answerText, // Pass text
       });
 

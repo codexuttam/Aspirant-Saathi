@@ -3,52 +3,130 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-async function evaluateFromImage({ imagePath, question, exam, answerText }) {
+async function evaluateFromImage({ imagePath, question, exam, marks, answerText }) {
   // Use gemini-2.5-flash by default as it supports both text and image inputs efficiently and has high limits
   const modelName = process.env.GEMINI_MODEL || "models/gemini-2.5-flash";
   console.log("Using Gemini Model:", modelName);
   const model = genAI.getGenerativeModel({ model: modelName });
 
+  // Define depth and criteria based on marks
+  let wordCountGuide = "150 words";
+  let depthGuide = "Concise, to the point.";
+
+  const m = Number(marks) || 10;
+  if (m <= 10) {
+    wordCountGuide = "150 words";
+    depthGuide = "Concise, precise, focus on key points.";
+  } else if (m <= 15) {
+    wordCountGuide = "250 words";
+    depthGuide = "Detailed, include examples, multiple dimensions.";
+  } else if (m <= 20) {
+    wordCountGuide = "300+ words";
+    depthGuide = "In-depth analysis, comprehensive coverage, way forward required.";
+  } else {
+    wordCountGuide = "Essay length (1000-1200 words)";
+    depthGuide = "Extensive, multidimensional, argumentative, flow is critical.";
+  }
+
+  // Define specific exam pattern instructions
+  let examInstruction = "";
+  let structureGuide = "";
+
+  // UPSC CSE & State PSC - General Studies
+  if (exam.includes("UPSC CSE (Mains) - GS") || exam.includes("State PSC")) {
+    examInstruction = `Standard: Civil Services (UPSC/State PSC). 
+    Focus: Analytical depth, multidimensional approach (Social, Economic, Political, International, Ethical), balanced view, and constructive conclusion.
+    Structure: Intro (Definition/Context) -> Body (Arguments/Dimensions/Examples) -> Conclusion (Way Forward).`;
+    if (m <= 10) structureGuide = "Concise Intro/Conclusion. Focus on 3-4 strong dimensions.";
+    else structureGuide = "Detailed Intro. Body must cover multiple dimensions deeply. Conclusion must be forward-looking.";
+  }
+
+  // UPSC Optionals / Law
+  else if (exam.includes("Optional") || exam.includes("Judicial")) {
+    examInstruction = `Standard: Subject Specialist / Judicial.
+    Focus: Technical depth, use of scholars/theories (for optional) or case laws/sections (for law).
+    Tone: Academic and authoritative.`;
+    structureGuide = "Standard academic essay structure with heavy substantiation.";
+  }
+
+  // Essays (UPSC/CAPF)
+  else if (exam.includes("Essay")) {
+    examInstruction = `Standard: Essay Paper.
+    Focus: Flow, coherence, anecdotes, varied perspectives, and philosophical/administrative depth.
+    Avoid: Header/Footer style bullets. Use paragraph format.`;
+    structureGuide = "Intro (Anecdote/Quote) -> Thesis -> Body Paragraphs (Thematic) -> Conclusion.";
+    wordCountGuide = m > 100 ? "1000-1200 words" : "300-400 words";
+  }
+
+  // CAPF / Defence
+  else if (exam.includes("CAPF") || exam.includes("CDS")) {
+    examInstruction = `Standard: Defence Officer (CAPF/CDS).
+    Focus: Argumentative (For/Against), clear stance, precise language, security perspective.
+    Report Writing: Objective, third-person, factual.`;
+    structureGuide = "Essay: Intro -> For/Against Args -> Synthesis. Report: Headline -> Data -> Analysis.";
+  }
+
+  // Intelligence (IB/RAW)
+  else if (exam.includes("IB") || exam.includes("RAW")) {
+    examInstruction = `Standard: Intelligence Bureau.
+    Focus: Security implications, threat analysis, crisp and precise language. No fluff.
+    Warning: Avoid flowery language. Be direct.`;
+    structureGuide = "Problem -> Analysis -> Solution/Security Implication.";
+  }
+
+  // SSC / Recruitment
+  else if (exam.includes("SSC")) {
+    examInstruction = `Standard: SSC/Clerical Recruitment.
+    Focus: Grammar, vocabulary, format compliance (Letter/Precis/Essay).
+    Priority: adherence to word limit and format is supreme.`;
+    structureGuide = "Strict format adherence.";
+  }
+
+  else {
+    examInstruction = `Standard: ${exam} competitive exam.`;
+  }
+
   // Construct the base prompt
   let prompt = `
-You are a highly critical, top-tier examiner for the ${exam} examination (e.g., UPSC Civil Services). Your task is to evaluate the student's answer with extreme rigor. Do not be lenient.
+You are a highly critical, top-tier examiner for the ${exam} examination. Your task is to evaluate the student's answer with extreme rigor.
 
-Question:
-"${question}"
+Question: "${question}"
+Max Marks: ${m}
+Expected Length: ~${wordCountGuide}
+Exam Context: ${examInstruction}
+Structure Guide: ${structureGuide}
+Depth Required: ${depthGuide}
 
 Evaluation Criteria:
-1. **Directives**: Pay close attention to the directive word (e.g., "Analyze", "Critically Examine", "Discuss"). If the student fails to address the specific demand of the directive, penalize them heavily.
-2. **Structure (IBC)**:
-   - **Introduction**: Must define key terms or provide context/data. It should be concise (10-15% of answer).
-   - **Body**: Must cover multiple dimensions (Social, Economic, Political, etc.) and include substantiation (examples, reports, articles, data).
-   - **Conclusion**: Must be forward-looking, offer a way forward, or summarize effectively.
-3. **Content Quality**: Look for depth, relevant examples, flow of arguments, and clarity. Generic points should receive low marks.
-4. **Presentation**: Use of headings, subheadings, and points is encouraged.
+1. **Directives**: Pay close attention to the directive word (e.g., "Analyze", "Discuss", "Critical Evaluate"). Penalize if the demand is not met.
+2. **Relevance**: Does the answer directly address the question?
+3. **Substantiation**: usage of examples, data, articles (for GS/Law), scholars (for Optional).
 
 Task:
-- Read the answer (text or image) carefully.
-- Identify the exact strengths and specific weaknesses.
-- Provide a score out of 10 based on strict ${exam} standards (usually >6 is rare/exceptional).
-- Analyze the structure explicitly.
+- Evaluate the answer (text/image) strictly against marks (${m}).
+- Provide a score out of ${m}.
+- If the answer is too short for ${m} marks, penalize heavily.
+- For Essays, judge flow and coherence strictly.
 
 Respond ONLY in valid JSON format:
 
 {
   "totalMarks": number,
+  "maxMarks": ${m},
   "breakup": {
     "introduction": number,
     "body": number,
     "conclusion": number
   },
   "structureAnalysis": {
-    "intro": { "present": boolean, "feedback": "Brief comment on intro quality" },
-    "body": { "present": boolean, "feedback": "Brief comment on body depth/dimensions" },
-    "conclusion": { "present": boolean, "feedback": "Brief comment on conclusion" }
+    "intro": { "present": boolean, "feedback": "string" },
+    "body": { "present": boolean, "feedback": "string" },
+    "conclusion": { "present": boolean, "feedback": "string" }
   },
-  "strengths": ["Specific point 1", "Specific point 2"],
-  "weaknesses": ["Critical gap 1", "Critical gap 2", "Missed dimension"],
-  "suggestions": ["Actionable advice 1", "Actionable advice 2"],
-  "improvedAnswer": "A brief, model outline or improved version of the introduction/conclusion."
+  "strengths": ["string", "string"],
+  "weaknesses": ["string", "string"],
+  "suggestions": ["string", "string"],
+  "improvedAnswer": "Brief outline or model improvement"
 }
 `;
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
 import ExamSelector from "../components/ExamSelector";
@@ -8,12 +8,45 @@ import { countWords } from "../utils/wordCounter";
 import "../styles/Submit.css";
 
 export default function Submit() {
-    const [exam, setExam] = useState("UPSC");
+    // Not changing this state, just noting it is correct.
+    const [exam, setExam] = useState("UPSC CSE (Mains) - GS");
+    const [marks, setMarks] = useState(10);
     const [showPopup, setShowPopup] = useState(false);
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    // Helper to get allowed marks for the selected exam
+    const getMarksOptions = (examName) => {
+        if (!examName) return [10, 15]; // Default
+
+        if (examName.includes("Essay") && examName.includes("UPSC")) return [125];
+        if (examName.includes("Essay")) return [25, 50, 100, 125]; // Generic Essay
+
+        // UPSC / State PSC (GS/Optional)
+        if (examName.includes("UPSC") || examName.includes("State PSC")) return [10, 15, 20];
+
+        // CAPF / IB / Defence
+        if (examName.includes("CAPF") || examName.includes("IB") || examName.includes("CDS")) return [10, 15, 20, 25];
+
+        // SSC
+        if (examName.includes("SSC")) return [25, 50];
+
+        // Judiciary
+        if (examName.includes("Judicial")) return [10, 15, 20, 25, 40];
+
+        return [10, 15, 20]; // Default fallback
+    };
+
+    const allowedMarks = getMarksOptions(exam);
+
+    useEffect(() => {
+        const options = getMarksOptions(exam);
+        if (!options.includes(marks)) {
+            setMarks(options[0]);
+        }
+    }, [exam]);
 
     const handleSubmit = async () => {
         if (!question || (!answer && !file)) {
@@ -23,6 +56,7 @@ export default function Submit() {
 
         const formData = new FormData();
         formData.append("exam", exam);
+        formData.append("marks", marks);
         formData.append("question", question);
         formData.append("answerText", answer);
         if (file) formData.append("answerImage", file);
@@ -60,7 +94,24 @@ export default function Submit() {
                     <div className="form-grid">
 
                         {/* Exam Selection */}
-                        <ExamSelector exam={exam} setExam={setExam} />
+                        <div className="form-row" style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+                            <div style={{ flex: 1 }}>
+                                <ExamSelector exam={exam} setExam={setExam} />
+                            </div>
+                            <div style={{ flex: 0.5 }}>
+                                <label className="form-label">Marks</label>
+                                <select
+                                    className="form-select"
+                                    value={marks}
+                                    onChange={(e) => setMarks(Number(e.target.value))}
+                                    style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #e2e8f0' }}
+                                >
+                                    {allowedMarks.map(m => (
+                                        <option key={m} value={m}>{m} Marks</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
 
                         {/* Question Input */}
                         <QuestionInput question={question} setQuestion={setQuestion} />

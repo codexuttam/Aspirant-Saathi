@@ -11,6 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import AttemptDetails from "./pages/AttemptDetails";
 import ModelAnswer from "./pages/ModelAnswer";
 import About from "./pages/About";
+import Profile from "./pages/Profile";
+import VerifyOtp from "./pages/VerifyOtp";
 
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
 
         {/* 🔒 Dashboard (Protected) */}
         <Route
@@ -30,6 +33,15 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
             </PrivateRoute>
           }
         />

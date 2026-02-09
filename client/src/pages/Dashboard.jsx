@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../services/api";
+import { getUser } from "../utils/auth";
 import Navbar from "../components/Navbar";
 import "../styles/Dashboard.css";
 
 export default function Dashboard() {
+  const [user] = useState(getUser());
   const [attempts, setAttempts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,7 +63,7 @@ export default function Dashboard() {
         {/* HEADER */}
         <div className="dashboard-header">
           <div className="welcome-text">
-            <h1>Welcome back, Aspirant! 👋</h1>
+            <h1>Welcome back, {user?.name || "Aspirant"}! 👋</h1>
             <p>Track your progress and improve your answer writing skills.</p>
           </div>
 
