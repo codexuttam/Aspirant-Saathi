@@ -117,4 +117,16 @@
 
 .auth-footer a:hover {
   border-bottom-color: var(--accent-color);
+
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+  transform-origin: center;
 }

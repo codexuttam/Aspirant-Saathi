@@ -219,4 +219,31 @@ router.post("/avatar", require("../middleware/auth.middleware"), upload.single("
   }
 });
 
+// Update Profile (Name & Email)
+router.put("/update-profile", require("../middleware/auth.middleware"), async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const userId = req.userId;
+
+    const updates = {};
+    if (name) updates.name = name;
+
+    // If email is being updated, check if it's already taken
+    if (email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== userId) {
+        return res.status(400).json({ error: "Email already in use" });
+      }
+      updates.email = email;
+    }
+
+    const user = await User.findByIdAndUpdate(userId, updates, { new: true }).select("-password");
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
+
 module.exports = router;

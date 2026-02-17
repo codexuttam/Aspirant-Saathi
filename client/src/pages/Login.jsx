@@ -78,8 +78,30 @@ export default function Login() {
               className={`form-input ${emailStatus === 'error' ? 'error-border' : ''} ${emailStatus === 'valid' ? 'valid-border' : ''}`}
               style={emailStatus === 'error' ? { borderColor: 'red' } : emailStatus === 'valid' ? { borderColor: 'green' } : {}}
             />
-            {emailStatus === 'valid' && <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: 'green' }}>✅</span>}
-            {emailStatus === 'error' && <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: 'red' }}>❌</span>}
+            {emailStatus === 'checking' && (
+              <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: '#64748b', display: 'flex', alignItems: 'center' }}>
+                <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+                </svg>
+              </span>
+            )}
+            {emailStatus === 'valid' && (
+              <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: '#10b981', display: 'flex', alignItems: 'center' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </span>
+            )}
+            {emailStatus === 'error' && (
+              <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: '#ef4444', display: 'flex', alignItems: 'center' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+              </span>
+            )}
           </div>
         </div>
 
@@ -132,7 +154,7 @@ export default function Login() {
         <div className="auth-footer">
           New here? <Link to="/register">Create an account</Link>
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 }

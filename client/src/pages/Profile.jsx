@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import API from "../services/api";
 import { getUser, setUser } from "../utils/auth";
@@ -9,6 +10,30 @@ export default function Profile() {
     const [user, setUserState] = useState(getUser());
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({ attempts: 0, average: 0 });
+    const [isEditing, setIsEditing] = useState(false);
+    const [editForm, setEditForm] = useState({ name: "", email: "" });
+
+    useEffect(() => {
+        if (user) {
+            setEditForm({ name: user.name || "", email: user.email || "" });
+        }
+    }, [user]);
+
+    const handleUpdateProfile = async () => {
+        try {
+            const res = await API.put("/auth/update-profile", editForm);
+            setUserState(res.data);
+            setUser(res.data);
+            setIsEditing(false);
+            toast.success("Profile updated successfully!");
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } catch (err) {
+            console.error(err);
+            toast.error(err.response?.data?.error || "Failed to update profile");
+        }
+    };
 
     useEffect(() => {
         // Determine if we need to fetch user data
@@ -119,18 +144,68 @@ export default function Profile() {
                 </section>
 
                 <section className="profile-section">
-                    <div className="section-title">
-                        <span>👤</span> Account Details
+                    <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div><span>👤</span> Account Details</div>
+                        <button
+                            onClick={() => isEditing ? handleUpdateProfile() : setIsEditing(true)}
+                            style={{
+                                background: isEditing ? '#10b981' : 'transparent',
+                                color: isEditing ? 'white' : '#3b82f6',
+                                border: isEditing ? 'none' : '1px solid #3b82f6',
+                                padding: '6px 16px',
+                                borderRadius: '6px',
+                                fontSize: '0.85rem',
+                                cursor: 'pointer',
+                                fontWeight: '600',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            {isEditing ? "Save Changes" : "Edit Profile"}
+                        </button>
                     </div>
 
                     <div className="info-grid">
                         <div className="info-item">
                             <span className="info-label">Full Name</span>
-                            <span className="info-value">{user?.name}</span>
+                            {isEditing ? (
+                                <input
+                                    value={editForm.name}
+                                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                                    className="edit-input"
+                                    style={{
+                                        padding: '8px 12px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #e2e8f0',
+                                        width: '100%',
+                                        fontSize: '1rem',
+                                        marginTop: '4px',
+                                        outline: 'none'
+                                    }}
+                                />
+                            ) : (
+                                <span className="info-value">{user?.name}</span>
+                            )}
                         </div>
                         <div className="info-item">
                             <span className="info-label">Email Address</span>
-                            <span className="info-value">{user?.email}</span>
+                            {isEditing ? (
+                                <input
+                                    value={editForm.email}
+                                    onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                                    type="email"
+                                    style={{
+                                        padding: '8px 12px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #e2e8f0',
+                                        width: '100%',
+                                        fontSize: '1rem',
+                                        marginTop: '4px',
+                                        outline: 'none'
+                                    }}
+                                />
+                            ) : (
+                                <span className="info-value">{user?.email}</span>
+                            )}
                         </div>
                         <div className="info-item">
                             <span className="info-label">User ID</span>
