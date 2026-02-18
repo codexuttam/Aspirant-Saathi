@@ -1,4 +1,6 @@
 const express = require("express");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
@@ -245,5 +247,70 @@ router.put("/update-profile", require("../middleware/auth.middleware"), async (r
   }
 });
 
+
+// Google Login Route
+// Google Login Route
+router.post("/google", async (req, res) => {
+  const { access_token } = req.body;
+
+  if (!access_token) return res.status(400).json({ error: "No access token provided" });
+
+  try {
+    // Fetch User Info using Access Token
+    const userInfoResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: { Authorization: `Bearer ${access_token}` }
+    });
+
+    if (!userInfoResponse.ok) {
+      throw new Error("Failed to fetch user info from Google");
+    }
+
+    const payload = await userInfoResponse.json();
+    const { email, name, picture, sub: googleId } = payload;
+
+    if (!email) return res.status(400).json({ error: "Email not provided by Google" });
+
+    // Find or Create User
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create new user
+      user = await User.create({
+        name,
+        email,
+        googleId,
+        profileImage: picture,
+        isVerified: true, // Google emails are verified
+        password: "" // No password for Google users
+      });
+    } else {
+      // Update existing user with Google ID and picture if missing
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.isVerified = true;
+      }
+      if (!user.profileImage) user.profileImage = picture;
+
+      await user.save();
+    }
+
+    // Generate specific JWT
+    const token = jwt.sign({ id: user._id }, "secretkey");
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        profileImage: user.profileImage
+      }
+    });
+
+  } catch (err) {
+    console.error("Google Auth Error:", err);
+    res.status(500).json({ error: "Google authentication failed" });
+  }
+});
 
 module.exports = router;

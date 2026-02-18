@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
 import API from "../services/api";
 import "../styles/Auth.css";
@@ -14,11 +15,31 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [emailStatus, setEmailStatus] = useState(null); // 'checking', 'error', 'valid'
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await API.post("/auth/google", {
+          access_token: tokenResponse.access_token
+        });
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        toast.success("Welcome back!");
+        navigate("/");
+      } catch (err) {
+        console.error(err);
+        toast.error("Google Login Failed");
+      }
+    },
+    onError: () => toast.error("Google Login Failed"),
+  });
+
+  // Handle Input Change
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     if (e.target.name === 'email') setEmailStatus(null);
   };
 
+  // Check Email Existence
   const handleEmailBlur = async () => {
     if (!form.email || !form.email.includes('@')) return;
 
@@ -37,6 +58,7 @@ export default function Login() {
     }
   };
 
+  // Submit Logic
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -46,7 +68,6 @@ export default function Login() {
         toast.success("OTP Sent! Please verify.");
         navigate("/verify-otp", { state: { email: form.email, from: "/" } });
       } else {
-        // Fallback for dev mode without OTP or legacy users
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
         toast.success("Welcome back!");
@@ -61,56 +82,88 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      <h2>Welcome Back</h2>
-      <p className="auth-subtitle">Login to access your evaluations</p>
-
       <form className="auth-form" onSubmit={handleSubmit}>
+
+        {/* Header Section */}
+        <div className="auth-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
+        </div>
+
+        <h2 className="auth-title">Welcome Back!</h2>
+        <p className="auth-subtitle">
+          New to Aspirant Saathi? <Link to="/register">Create an account</Link>
+        </p>
+
+        {/* Tabs (Visual Only) */}
+        <div className="auth-tabs" style={{ marginTop: '1.5rem' }}>
+          <button type="button" className="auth-tab active">Email</button>
+          <button type="button" className="auth-tab">Phone</button>
+        </div>
+
+        {/* Google Button */}
+        <button
+          type="button"
+          className="google-btn"
+          onClick={() => googleLogin()}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+          </svg>
+          Continue with Google
+        </button>
+
+        <div className="auth-divider">
+          <span>OR</span>
+        </div>
+
+        {/* Email Input */}
         <div className="form-group">
+          <label className="input-label">Email Address <span>*</span></label>
           <div style={{ position: 'relative' }}>
             <input
               name="email"
               type="email"
-              placeholder="Email address"
+              placeholder="Enter your email"
               value={form.email}
               onChange={handleChange}
               onBlur={handleEmailBlur}
               required
               className={`form-input ${emailStatus === 'error' ? 'error-border' : ''} ${emailStatus === 'valid' ? 'valid-border' : ''}`}
-              style={emailStatus === 'error' ? { borderColor: 'red' } : emailStatus === 'valid' ? { borderColor: 'green' } : {}}
             />
+            {/* Validation Icons */}
             {emailStatus === 'checking' && (
-              <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: '#64748b', display: 'flex', alignItems: 'center' }}>
-                <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
-                </svg>
+              <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }}>
+                <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
               </span>
             )}
             {emailStatus === 'valid' && (
-              <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: '#10b981', display: 'flex', alignItems: 'center' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
+              <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: '#10b981' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </span>
             )}
             {emailStatus === 'error' && (
-              <span style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: '#ef4444', display: 'flex', alignItems: 'center' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="15" y1="9" x2="9" y2="15"></line>
-                  <line x1="9" y1="9" x2="15" y2="15"></line>
-                </svg>
+              <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: '#ef4444' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </span>
             )}
           </div>
         </div>
 
+        {/* Password Input */}
         <div className="form-group">
+          <label className="input-label">Password <span>*</span></label>
           <div style={{ position: 'relative' }}>
             <input
               name="password"
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
+              placeholder="Enter your password"
               value={form.password}
               onChange={handleChange}
               required
@@ -120,28 +173,18 @@ export default function Login() {
               onClick={() => setShowPassword(!showPassword)}
               style={{
                 position: 'absolute',
-                right: '10px',
+                right: '12px',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 cursor: 'pointer',
-                userSelect: 'none',
                 color: '#64748b',
-                display: 'flex',
-                alignItems: 'center'
+                display: 'flex'
               }}
             >
               {showPassword ? (
-                // Eye Off (Hide)
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                  <line x1="1" y1="1" x2="23" y2="23"></line>
-                </svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94m9.9.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
               ) : (
-                // Eye (Show)
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               )}
             </span>
           </div>
@@ -151,10 +194,10 @@ export default function Login() {
           {loading ? "Signing In..." : "Sign In"}
         </button>
 
-        <div className="auth-footer">
-          New here? <Link to="/register">Create an account</Link>
-        </div>
-      </form >
-    </div >
+        <p className="auth-footer-text">
+          By continuing, you agree to our <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.
+        </p>
+      </form>
+    </div>
   );
 }
