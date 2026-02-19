@@ -16,11 +16,17 @@ import Profile from "./pages/Profile";
 import VerifyOtp from "./pages/VerifyOtp";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import Pricing from "./pages/Pricing";
+import RefundPolicy from "./pages/RefundPolicy";
+import ScrollToTop from "./components/ScrollToTop";
+import ChatBot from "./components/ChatBot";
 
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
+      <ChatBot />
       <Toaster position="top-center" reverseOrder={false} />
 
       <Routes>
@@ -32,6 +38,8 @@ function App() {
         <Route path="/complete-profile" element={<CompleteProfile />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
 
         {/* 🔒 Dashboard (Protected) */}
         <Route

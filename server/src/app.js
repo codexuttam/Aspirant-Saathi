@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth.routes");
 const protectedRoutes = require("./routes/protected.routes");
 const submitRoutes = require("./routes/submit.routes");
 const attemptRoutes = require("./routes/attempt.routes");
+const refundRoutes = require("./routes/refund.routes");
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use("/api/auth", authRoutes);   // public auth routes
 app.use("/api", protectedRoutes);   // protected test route
 app.use("/api", submitRoutes);      // submit answer route
 app.use("/api", attemptRoutes);     // attempts + attempt details
+app.use("/api/refund", refundRoutes); // refund routes
 
 module.exports = app;

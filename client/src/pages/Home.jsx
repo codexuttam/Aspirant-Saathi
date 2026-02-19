@@ -310,23 +310,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEW: WHATSAPP CTA SECTION */}
-      <section className="whatsapp-cta-section">
-        <div className="whatsapp-box">
-          <div className="whatsapp-content">
-            <h2>Still have some doubts? <span className="wa-icon">🟢</span></h2>
-            <p>
-              Reach out to us on WhatsApp for instant help from our team. Whether you have questions,
-              need guidance, or want to share feedback, we're just a message away.
-            </p>
-          </div>
-          <div className="whatsapp-action">
-            <a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" className="wa-btn">
-              <span>💬</span> Chat with us
-            </a>
-          </div>
-        </div>
-      </section>
+
 
       {/* NEW: FINAL CALL TO ACTION */}
       <section className="final-cta-section">
@@ -350,7 +334,7 @@ export default function Home() {
           <div className="footer-links-col">
             <h4>Quick Links</h4>
             <ul>
-              <li><Link to="/">Home</Link></li>
+              <li><Link to="/" onClick={() => window.scrollTo(0, 0)}>Home</Link></li>
               <li><Link to="/about">About Us</Link></li>
               <li><Link to="/pricing">Pricing</Link></li>
               <li><Link to="/login">Login</Link></li>
@@ -362,7 +346,7 @@ export default function Home() {
             <ul>
               <li><Link to="/privacy">Privacy Policy</Link></li>
               <li><Link to="/terms">Terms of Service</Link></li>
-              <li><Link to="/refund">Refund Policy</Link></li>
+              <li><Link to="/refund-policy">Refund Policy</Link></li>
             </ul>
           </div>
 

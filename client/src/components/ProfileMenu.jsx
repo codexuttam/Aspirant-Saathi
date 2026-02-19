@@ -5,8 +5,15 @@ import "./ProfileMenu.css";
 
 export default function ProfileMenu() {
   const [open, setOpen] = useState(false);
-  const user = getUser();
+  const [user, setUserState] = useState(getUser());
   const menuRef = useRef(null);
+
+  // Listen for user updates (e.g., token deduction)
+  useEffect(() => {
+    const handleUserUpdate = () => setUserState(getUser());
+    window.addEventListener("userUpdated", handleUserUpdate);
+    return () => window.removeEventListener("userUpdated", handleUserUpdate);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -56,6 +63,15 @@ export default function ProfileMenu() {
           <p className="profile-email-small" style={{ fontSize: "0.8rem", color: "#aaa", marginBottom: "10px" }}>
             {user?.email}
           </p>
+
+          <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '8px', borderRadius: '6px', marginBottom: '10px', textAlign: 'center' }}>
+            <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#3b82f6' }}>
+              🪙 {user?.tokens !== undefined ? user.tokens : '...'} Tokens
+            </span>
+            <Link to="/pricing" style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textDecoration: 'none', marginTop: '4px' }}>
+              Get more →
+            </Link>
+          </div>
 
           <Link to="/" className="menu-item">
             🏠 Home

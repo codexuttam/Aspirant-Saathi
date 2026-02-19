@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
 import ExamSelector from "../components/ExamSelector";
 import QuestionInput from "../components/QuestionInput";
 import AnswerUploader from "../components/AnswerUploader";
 import { countWords } from "../utils/wordCounter";
+import { getUser, setUser } from "../utils/auth";
 import "../styles/Submit.css";
 
 export default function Submit() {
+    const navigate = useNavigate();
     // Not changing this state, just noting it is correct.
     const [exam, setExam] = useState("UPSC CSE (Mains) - GS");
     const [marks, setMarks] = useState(10);
@@ -66,13 +69,30 @@ export default function Submit() {
             const res = await API.post("/submit", formData);
             alert("Answer submitted successfully");
             console.log(res.data);
+
+            // Update local user tokens
+            if (res.data.tokens !== undefined) {
+                const currentUser = getUser();
+                if (currentUser) {
+                    currentUser.tokens = res.data.tokens;
+                    setUser(currentUser);
+                    // Dispatch event for Navbar/ProfileMenu to listen
+                    window.dispatchEvent(new Event("userUpdated"));
+                }
+            }
+
             // Optional: Reset form
             setQuestion("");
             setAnswer("");
             setFile(null);
         } catch (err) {
-            alert("Submission failed");
-            console.error(err);
+            if (err.response && err.response.status === 402) {
+                alert("Insufficient tokens! Redirecting to pricing...");
+                navigate("/pricing");
+            } else {
+                alert("Submission failed");
+                console.error(err);
+            }
         } finally {
             setLoading(false);
         }

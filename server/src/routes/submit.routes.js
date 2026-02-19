@@ -2,6 +2,7 @@ const express = require("express");
 const authMiddleware = require("../middleware/auth.middleware");
 const upload = require("../utils/upload");
 const Attempt = require("../models/Attempt");
+const User = require("../models/User");
 const evaluateFromImage = require("../utils/geminiEvaluator");
 
 const router = express.Router();
@@ -32,6 +33,26 @@ router.post(
         });
       }
 
+      // 0. Check Tokens
+      const user = await User.findById(req.userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (user.tokens === undefined) {
+        user.tokens = 100; // Legacy user bonus
+        await user.save();
+      }
+
+      if (user.tokens < 5) {
+        return res.status(402).json({
+          error: "Insufficient tokens",
+          required: 5,
+          current: user.tokens,
+          redirect: "/pricing"
+        });
+      }
+
       // 🧠 Gemini Evaluation
       const evaluation = await evaluateFromImage({
         imagePath: req.file ? req.file.path : null, // Handle optional file
@@ -40,6 +61,10 @@ router.post(
         marks: req.body.marks || 10,
         answerText, // Pass text
       });
+
+      // Deduct Tokens
+      user.tokens -= 5;
+      await user.save();
 
       // 💾 Save attempt
       const attempt = await Attempt.create({
@@ -58,6 +83,7 @@ router.post(
         message: "Answer evaluated successfully",
         attemptId: attempt._id,
         evaluation,
+        tokens: user.tokens,
       });
     } catch (err) {
       console.error("SUBMIT ERROR 👉", err);

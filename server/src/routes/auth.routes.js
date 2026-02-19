@@ -134,7 +134,8 @@ router.post("/verify-otp", async (req, res) => {
       id: user._id,
       name: user.name,
       email: user.email,
-      profileImage: user.profileImage
+      profileImage: user.profileImage,
+      tokens: user.tokens
     }
   });
 });
@@ -306,7 +307,8 @@ router.post("/google", async (req, res) => {
         email: user.email,
         profileImage: user.profileImage,
         exam: user.exam, // Include exam
-        detailsRequired: !user.exam // If exam is missing, prompt for details
+        detailsRequired: !user.exam, // If exam is missing, prompt for details
+        tokens: user.tokens
       }
     });
 
@@ -387,7 +389,8 @@ router.post("/verify-otp-phone", async (req, res) => {
         phoneNumber: user.phoneNumber,
         profileImage: user.profileImage,
         exam: user.exam,
-        detailsRequired: !user.name || !user.email || !user.exam
+        detailsRequired: !user.name || !user.email || !user.exam,
+        tokens: user.tokens
       }
     });
   } catch (err) {
