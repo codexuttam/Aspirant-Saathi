@@ -164,3 +164,243 @@
     color: #94a3b8;
     border-top: 1px solid #e2e8f0;
 }
+/* --- NEW ENERGETIC VISUALS --- */
+
+.step-card {
+  position: relative;
+  /* Use a subtle gradient background for the cards themselves */
+  background: white; 
+  /* Removing the old background */
+}
+
+/* Base Visual Container */
+.step-visual {
+  width: 100%;
+  height: 220px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s ease;
+}
+
+.step-card:hover .step-visual {
+  transform: scale(1.02);
+}
+
+/* 1. UPLOAD VISUAL (Blue/Purple Energy) */
+.visual-upload {
+  background: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 100%);
+  border: 1px solid #c7d2fe;
+}
+
+.upload-doc {
+  width: 80px;
+  height: 100px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: float 4s ease-in-out infinite;
+}
+
+.doc-line {
+  width: 50px;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  margin-bottom: 6px;
+}
+.doc-line.short { width: 30px; }
+
+.upload-arrow {
+  margin-top: 10px;
+  width: 36px;
+  height: 36px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  animation: bounce 2s infinite;
+}
+
+/* 2. AI VISUAL (Cyber Green/Teal) */
+.visual-ai {
+  background: linear-gradient(135deg, #dcfce7 0%, #ccfbf1 100%);
+  border: 1px solid #86efac;
+}
+
+.ai-brain {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  animation: pulse-glow 3s infinite;
+}
+
+.brain-node {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.brain-node.n1 { top: 20px; left: 42px; }
+.brain-node.n2 { bottom: 20px; left: 20px; }
+.brain-node.n3 { bottom: 20px; right: 20px; }
+
+.brain-circuit {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px; height: 60px;
+  border: 4px solid #34d399;
+  border-radius: 50%;
+  border-left-color: transparent;
+  animation: spin 4s linear infinite;
+}
+
+/* 3. FEEDBACK VISUAL (Orange/Amber Warmth) */
+.visual-feedback {
+  background: linear-gradient(135deg, #ffedd5 0%, #fee2e2 100%);
+  border: 1px solid #fdba74;
+}
+
+.feedback-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 80px;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.chart-bar {
+  width: 16px;
+  background: #f97316;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+}
+
+.b1 { height: 40px; animation: bar-grow 2s infinite alternate; }
+.b2 { height: 60px; animation: bar-grow 2.5s infinite alternate-reverse; }
+.b3 { height: 80px; animation: bar-grow 3s infinite alternate; }
+
+.chart-tick {
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  background: #22c55e;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
+  animation: pop-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* 4. MODEL ANSWER VISUAL (Royal Purple/Gold) */
+.visual-model {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 100%);
+  border: 1px solid #d8b4fe;
+}
+
+.model-doc {
+  width: 90px;
+  height: 110px;
+  background: white;
+  border-radius: 8px; /* Classic sharp doc feel */
+  position: relative;
+  box-shadow: 0 15px 40px rgba(147, 51, 234, 0.2);
+  border: 4px solid #a855f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(5deg);
+}
+
+.star-badge {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  font-size: 2rem;
+  color: #fbbf24; /* Gold */
+  text-shadow: 0 2px 10px rgba(251, 191, 36, 0.4);
+  animation: spin-slow 10s linear infinite;
+}
+
+.doc-content {
+  width: 60%;
+  height: 60%;
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 10px,
+    #f3f4f6 10px,
+    #f3f4f6 12px
+  );
+}
+
+/* ANIMATIONS */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  60% { transform: translateY(-3px); }
+}
+
+@keyframes pulse-glow {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes bar-grow {
+  from { transform: scaleY(0.8); }
+  to { transform: scaleY(1.1); }
+}
+
+@keyframes pop-in {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Update step number to be more integrated */
+.step-number {
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  /* Make it pop color-wise depending on card? 
+     Let's keep primary for consistency but add a border */
+  border: 3px solid white;
+}

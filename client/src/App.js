@@ -5,6 +5,7 @@ import "./App.css";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import CompleteProfile from "./pages/CompleteProfile";
 import Submit from "./pages/Submit";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
@@ -13,6 +14,8 @@ import ModelAnswer from "./pages/ModelAnswer";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
 import VerifyOtp from "./pages/VerifyOtp";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 
 
 function App() {
@@ -26,6 +29,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/complete-profile" element={<CompleteProfile />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
 
         {/* 🔒 Dashboard (Protected) */}
         <Route

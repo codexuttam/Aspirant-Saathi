@@ -23,18 +23,31 @@ export default function ProfileMenu() {
     };
   }, [menuRef]);
 
+  // Determine the correct image URL
+  const getProfileImageUrl = () => {
+    if (!user?.profileImage) return null;
+    if (user.profileImage.startsWith("http")) return user.profileImage;
+    return `http://localhost:5000${user.profileImage}`;
+  };
+
+  const imageUrl = getProfileImageUrl();
+
   return (
     <div className="profile-container" ref={menuRef}>
-      <div className="profile-avatar"
+      <div
+        className="profile-avatar"
+        title={user?.name || "Profile"}
         onClick={() => setOpen(!open)}
         style={{
-          backgroundImage: user?.profileImage ? `url(http://localhost:5000${user.profileImage})` : 'none',
+          backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          color: user?.profileImage ? 'transparent' : 'white'
+          backgroundColor: imageUrl ? 'transparent' : '#111827', // Fallback color
+          color: imageUrl ? 'transparent' : 'white',
+          border: '2px solid #e2e8f0' // Optional: adds a nice border like Gmail
         }}
       >
-        {user?.name?.charAt(0).toUpperCase() || "👤"}
+        {!imageUrl && (user?.name?.charAt(0).toUpperCase() || "👤")}
       </div>
 
       {open && (

@@ -46,20 +46,335 @@ export default function Home() {
         </div>
 
         <div className="hero-visual">
-          <div className="image-backdrop"></div>
-          <img
-            src={HeroImage}
-            alt="AI Evaluation Illustration"
-            className="hero-image floating-anim"
-          />
+          <div className="hero-css-composition">
+            {/* Floating Papers Stack */}
+            <div className="paper-stack">
+              <div className="paper p1"></div>
+              <div className="paper p2"></div>
+              <div className="paper p3">
+                <div className="paper-content">
+                  <div className="p-line l1"></div>
+                  <div className="p-line l2"></div>
+                  <div className="p-line l3"></div>
+                  <div className="p-circle"></div>
+                </div>
+                {/* Scanning Beam */}
+                <div className="scan-beam"></div>
+              </div>
+            </div>
+
+            {/* Floating Elements (Badges/Icons) */}
+            <div className="float-icon icon-1">📝</div>
+            <div className="float-icon icon-2">✨</div>
+            <div className="float-icon icon-3">A+</div>
+
+            {/* Background Blob */}
+            <div className="hero-blob"></div>
+          </div>
         </div>
       </main>
 
-      {/* FOOTER */}
-      <footer className="footer">
-        <p>
-          Built for serious aspirants · Structured thinking · Honest feedback
+      {/* FEATURES SECTION */}
+      <section className="features-section">
+        <h2 className="section-title">Everything You Need to Rank</h2>
+        <p className="section-subtitle">
+          A comprehensive toolkit designed to transform your preparation strategy.
         </p>
+        <div className="features-grid">
+          <div className="feature-card">
+            <div className="feature-icon-wrapper blue-glow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="feature-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
+            <h3>Instant Evaluation</h3>
+            <p>Get detailed, line-by-line feedback in seconds. No more waiting for manual reviews.</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon-wrapper purple-glow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="feature-icon"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            </div>
+            <h3>Deep Analytics</h3>
+            <p>Track your structure, content, and keyword usage over time with granular metrics.</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon-wrapper green-glow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="feature-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <h3>Model Answers</h3>
+            <p>Access AI-generated ideal answers for every question to understand the gold standard.</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon-wrapper orange-glow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="feature-icon"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+            </div>
+            <h3>Score Prediction</h3>
+            <p>Get a realistic estimate of your potential mains score based on historical trends.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ALTERNATING CONTENT SECTIONS */}
+      <section className="content-section">
+        <div className="content-wrapper">
+          <div className="content-text">
+            <h2 className="content-title">Master the Art of Answer Writing</h2>
+            <p className="content-desc">
+              Writing a good answer is more than just knowledge. It's about structure, flow, and presentation.
+            </p>
+            <ul className="content-list">
+              <li>
+                <span className="check-icon">✓</span> Learn to structure your thoughts
+              </li>
+              <li>
+                <span className="check-icon">✓</span> Improve detailed presentation
+              </li>
+              <li>
+                <span className="check-icon">✓</span> Write concisely and effectively
+              </li>
+            </ul>
+          </div>
+          <div className="content-visual visual-left">
+            {/* Abstract Visual Representation */}
+            <div className="abstract-card">
+              <div className="card-header">
+                <div className="dot red"></div><div className="dot yellow"></div><div className="dot green"></div>
+              </div>
+              <div className="card-body">
+                <div className="line full"></div>
+                <div className="line full"></div>
+                <div className="line three-quarter"></div>
+                <div className="line half"></div>
+                <div className="highlight-box">
+                  <span>Introduction Strong</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW: AI MENTOR (BLUE) SECTION */}
+      <section className="mentor-section">
+        <div className="content-wrapper">
+          <div className="mentor-visual">
+            {/* CSS Illustration of a "Mentor" / Robot */}
+            <div className="ai-bot-visual">
+              <div className="bot-head">
+                <div className="bot-eye left"></div>
+                <div className="bot-eye right"></div>
+              </div>
+              <div className="bot-body">
+                <div className="bot-screen">
+                  <div className="typing-dots"><span>.</span><span>.</span><span>.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mentor-text">
+            <h2>You Are Not Alone</h2>
+            <p>
+              We've created an all-in-one AI companion that doesn't just grade—it teaches.
+              Assess, Analyze, and Enhance your writing style with actionable insights that feel like
+              a personal mentor sitting right beside you 24/7.
+            </p>
+            <Link to="/register" className="white-btn">Start Evaluating Now</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="content-section reverse">
+        <div className="content-wrapper">
+          <div className="content-text">
+            <h2 className="content-title">Lightning-Fast Insights</h2>
+            <p className="content-desc">
+              Why wait for weeks? Get instant feedback that helps you iterate and improve continuously.
+            </p>
+            <p className="content-desc">
+              Our AI analyzes your answers for keyword density, contextual relevance, and formatting to give you an edge.
+            </p>
+          </div>
+          <div className="content-visual visual-right">
+            <div className="stats-visual">
+              <div className="bar-chart">
+                <div className="bar" style={{ height: '40%' }}></div>
+                <div className="bar" style={{ height: '60%' }}></div>
+                <div className="bar" style={{ height: '85%' }}></div>
+                <div className="bar active" style={{ height: '95%' }}></div>
+              </div>
+              <div className="float-tag">Growth 🚀</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW: WHY CHOOSE US (STATS) SECTION */}
+      <section className="why-us-section">
+        <div className="content-wrapper">
+          <div className="why-us-text">
+            <h2 className="content-title" style={{ textAlign: 'left' }}>Why Choose Aspirant-Saathi</h2>
+            <p className="content-desc">
+              Traditional coaching evaluation takes days. We take seconds. Get feedback while your thoughts are still fresh.
+            </p>
+
+            <div className="feature-list-check">
+              <div className="check-item">
+                <span className="icon-box">⚡</span>
+                <div>
+                  <h4>Lightning Fast Results</h4>
+                  <p>Don't break your flow. Get instant analysis and move to the next question immediately.</p>
+                </div>
+              </div>
+              <div className="check-item">
+                <span className="icon-box">🎯</span>
+                <div>
+                  <h4>Exam-Oriented Feedback</h4>
+                  <p>Our AI analyzes your structure and keywords to align with competitive exam standards.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-grid-visual">
+            <div className="stat-card-mini">
+              <div className="stat-icon-circle blue">⏱️</div>
+              <h3>60s</h3>
+              <p>Avg. Evaluation Time</p>
+            </div>
+            <div className="stat-card-mini">
+              <div className="stat-icon-circle green">🤖</div>
+              <h3>AI</h3>
+              <p>Instant Analysis</p>
+            </div>
+            <div className="stat-card-mini wide">
+              <div className="stat-icon-circle purple">🌙</div>
+              <h3>24/7</h3>
+              <p>Available Anytime</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* PRECISE FEEDBACK SECTION used to be dark blue */}
+      <section className="feedback-section">
+        <h2 className="light-title">Precise Feedback for Better Answers</h2>
+        <p className="light-subtitle">Our platform guides you at every step with granular tags.</p>
+
+        <div className="tags-cloud">
+          <span className="tag glow-tag">Structure Analysis</span>
+          <span className="tag glow-tag">Content Relevance</span>
+          <span className="tag glow-tag">Concise & Crisp</span>
+          <span className="tag glow-tag">Professional Tone</span>
+          <span className="tag glow-tag">Data Integration</span>
+          <span className="tag glow-tag">Critical Analysis</span>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="testimonials-section">
+        <h2 className="section-title">Why Aspirants Love Us</h2>
+        <div className="testimonials-grid">
+          <div className="testimonial-card">
+            <div className="stars">★★★★★</div>
+            <p>"This tool completely changed how I approach answer writing. The feedback is specific and actionable."</p>
+            <div className="user-info">
+              <div className="user-avatar gradient-1">R</div>
+              <div>
+                <h4>Rahul Sharma</h4>
+                <span>UPSC Aspirant</span>
+              </div>
+            </div>
+          </div>
+          <div className="testimonial-card">
+            <div className="stars">★★★★★</div>
+            <p>"I used to struggle with structure. The AI breakdown helped me organize my thoughts much better."</p>
+            <div className="user-info">
+              <div className="user-avatar gradient-2">P</div>
+              <div>
+                <h4>Priya Singh</h4>
+                <span>State PSC Topper</span>
+              </div>
+            </div>
+          </div>
+          <div className="testimonial-card">
+            <div className="stars">★★★★★</div>
+            <p>"Instant evaluation means I can practice more questions in less time. Highly recommended!"</p>
+            <div className="user-info">
+              <div className="user-avatar gradient-3">A</div>
+              <div>
+                <h4>Arjun Mehta</h4>
+                <span>CAPF Candidate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW: WHATSAPP CTA SECTION */}
+      <section className="whatsapp-cta-section">
+        <div className="whatsapp-box">
+          <div className="whatsapp-content">
+            <h2>Still have some doubts? <span className="wa-icon">🟢</span></h2>
+            <p>
+              Reach out to us on WhatsApp for instant help from our team. Whether you have questions,
+              need guidance, or want to share feedback, we're just a message away.
+            </p>
+          </div>
+          <div className="whatsapp-action">
+            <a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" className="wa-btn">
+              <span>💬</span> Chat with us
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW: FINAL CALL TO ACTION */}
+      <section className="final-cta-section">
+        <h2 className="final-title">Write Confidently, Score Higher with <span className="brand-text">Aspirant-Saathi</span></h2>
+        <p className="final-subtitle">
+          Refine your UPSC/PCS Mains answers with precision. Our AI-driven evaluation ensures clarity,
+          relevance, and structured writing—helping you improve with every attempt.
+        </p>
+        <Link to="/register" className="primary-btn glow-effect large">Start Writing Now</Link>
+      </section>
+
+      {/* NEW: COMPREHENSIVE FOOTER */}
+      <footer className="main-footer">
+        <div className="footer-content">
+          <div className="footer-brand">
+            <h3>Aspirant-Saathi</h3>
+            <p>Your personal AI answer writing mentor.</p>
+            <p className="copyright">© 2026 Aspirant-Saathi. All rights reserved.</p>
+          </div>
+
+          <div className="footer-links-col">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/pricing">Pricing</Link></li>
+              <li><Link to="/login">Login</Link></li>
+            </ul>
+          </div>
+
+          <div className="footer-links-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
+              <li><Link to="/terms">Terms of Service</Link></li>
+              <li><Link to="/refund">Refund Policy</Link></li>
+            </ul>
+          </div>
+
+          <div className="footer-links-col">
+            <h4>Contact</h4>
+            <ul>
+              <li><a href="mailto:support@aspirantsaathi.com">support@aspirantsaathi.com</a></li>
+              <li><a href="#">Twitter</a></li>
+              <li><a href="#">LinkedIn</a></li>
+            </ul>
+          </div>
+        </div>
       </footer>
     </div>
   );

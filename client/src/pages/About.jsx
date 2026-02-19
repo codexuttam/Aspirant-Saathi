@@ -45,16 +45,66 @@ export default function About() {
                 </div>
 
                 <div className="steps-grid">
-                    {steps.map((step) => (
-                        <div key={step.id} className="step-card">
-                            <div className="step-number">{step.id}</div>
-                            <div className="step-image-placeholder">
-                                {step.icon}
+                    <div className="step-card">
+                        <div className="step-number">1</div>
+                        <div className="step-visual visual-upload">
+                            <div className="upload-doc">
+                                <div className="doc-line"></div>
+                                <div className="doc-line short"></div>
+                                <div className="upload-arrow">↑</div>
                             </div>
-                            <h3 className="step-title">{step.title}</h3>
-                            <p className="step-description">{step.description}</p>
                         </div>
-                    ))}
+                        <h3 className="step-title">Upload Your Answer</h3>
+                        <p className="step-description">
+                            Take a clear photo of your handwritten answer or type it directly into our editor. We support various formats to make it easy for you.
+                        </p>
+                    </div>
+
+                    <div className="step-card">
+                        <div className="step-number">2</div>
+                        <div className="step-visual visual-ai">
+                            <div className="ai-brain">
+                                <div className="brain-node n1"></div>
+                                <div className="brain-node n2"></div>
+                                <div className="brain-node n3"></div>
+                                <div className="brain-circuit"></div>
+                            </div>
+                        </div>
+                        <h3 className="step-title">AI Analysis</h3>
+                        <p className="step-description">
+                            Our advanced AI, trained on topper copies and examiner guidelines, scans your answer for structure, content, and keywords.
+                        </p>
+                    </div>
+
+                    <div className="step-card">
+                        <div className="step-number">3</div>
+                        <div className="step-visual visual-feedback">
+                            <div className="feedback-chart">
+                                <div className="chart-bar b1"></div>
+                                <div className="chart-bar b2"></div>
+                                <div className="chart-bar b3"></div>
+                                <div className="chart-tick">✓</div>
+                            </div>
+                        </div>
+                        <h3 className="step-title">Get Instant Feedback</h3>
+                        <p className="step-description">
+                            Receive a detailed evaluation with marks, strengths, weaknesses, and specific suggestions on how to improve.
+                        </p>
+                    </div>
+
+                    <div className="step-card">
+                        <div className="step-number">4</div>
+                        <div className="step-visual visual-model">
+                            <div className="model-doc">
+                                <div className="star-badge">★</div>
+                                <div className="doc-content"></div>
+                            </div>
+                        </div>
+                        <h3 className="step-title">View Model Answer</h3>
+                        <p className="step-description">
+                            Compare your attempt with a high-quality model answer to understand the ideal structure and content depth.
+                        </p>
+                    </div>
                 </div>
 
                 <div className="cta-section">

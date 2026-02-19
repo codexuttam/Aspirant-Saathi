@@ -250,6 +250,7 @@ router.put("/update-profile", require("../middleware/auth.middleware"), async (r
 
 // Google Login Route
 // Google Login Route
+// Google Login Route
 router.post("/google", async (req, res) => {
   const { access_token } = req.body;
 
@@ -303,13 +304,127 @@ router.post("/google", async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        profileImage: user.profileImage
+        profileImage: user.profileImage,
+        exam: user.exam, // Include exam
+        detailsRequired: !user.exam // If exam is missing, prompt for details
       }
     });
 
   } catch (err) {
     console.error("Google Auth Error:", err);
     res.status(500).json({ error: "Google authentication failed" });
+  }
+});
+
+// Phone Auth - Send OTP
+router.post("/send-otp-phone", async (req, res) => {
+  const { phoneNumber } = req.body;
+
+  if (!phoneNumber) return res.status(400).json({ error: "Phone number required" });
+
+  try {
+    let user = await User.findOne({ phoneNumber });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+    if (!user) {
+      // Create new user (Signup flow implicitly)
+      user = await User.create({
+        phoneNumber,
+        otp,
+        otpExpires,
+        isVerified: false
+      });
+    } else {
+      // Update existing (Login flow)
+      user.otp = otp;
+      user.otpExpires = otpExpires;
+      await user.save();
+    }
+
+    // Simulate SMS
+    console.log(`[SMS SIMULATION] OTP for ${phoneNumber}: ${otp}`);
+
+    res.json({
+      message: "OTP sent to your phone",
+      phoneNumber,
+      otpSent: true,
+      dev_otp: otp // For testing convenience
+    });
+  } catch (err) {
+    console.error("Phone Auth Error:", err);
+    res.status(500).json({ error: "Failed to process phone number" });
+  }
+});
+
+// Phone Auth - Verify OTP
+router.post("/verify-otp-phone", async (req, res) => {
+  const { phoneNumber, otp } = req.body;
+  if (!phoneNumber || !otp) return res.status(400).json({ error: "Phone and OTP required" });
+
+  try {
+    const user = await User.findOne({ phoneNumber });
+    if (!user) return res.status(400).json({ error: "User not found" });
+
+    if (user.otp !== otp || user.otpExpires < Date.now()) {
+      return res.status(400).json({ error: "Invalid or expired OTP" });
+    }
+
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    user.isVerified = true;
+    await user.save();
+
+    const token = jwt.sign({ id: user._id }, "secretkey");
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        profileImage: user.profileImage,
+        exam: user.exam,
+        detailsRequired: !user.name || !user.email || !user.exam
+      }
+    });
+  } catch (err) {
+    console.error("Verify OTP Error:", err);
+    res.status(500).json({ error: "Verification failed" });
+  }
+});
+
+// Complete Profile (Name, Email, Exam)
+router.post("/complete-profile", require("../middleware/auth.middleware"), async (req, res) => {
+  try {
+    const { name, email, exam } = req.body;
+    const userId = req.userId;
+
+    const updates = {};
+    if (name) updates.name = name;
+    if (exam) updates.exam = exam;
+
+    if (email) {
+      const existing = await User.findOne({ email });
+      // If email exists and it's NOT the current user
+      if (existing && existing._id.toString() !== userId) {
+        return res.status(400).json({ error: "Email already taken" });
+      }
+      updates.email = email;
+    }
+
+    const user = await User.findByIdAndUpdate(userId, updates, { new: true }).select("-password");
+
+    res.json({
+      user,
+      message: "Profile updated successfully"
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update profile" });
   }
 });
 

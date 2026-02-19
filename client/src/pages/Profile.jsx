@@ -102,7 +102,11 @@ export default function Profile() {
             <main className="profile-content">
                 <div className="profile-header">
                     <div className="profile-avatar-large" style={{
-                        backgroundImage: user?.profileImage ? `url(http://localhost:5000${user.profileImage})` : 'none',
+                        backgroundImage: (user?.profileImage && (user.profileImage.startsWith('http') || user.profileImage.startsWith('data:')))
+                            ? `url(${user.profileImage})`
+                            : user?.profileImage
+                                ? `url(http://localhost:5000${user.profileImage})`
+                                : 'none',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         cursor: 'pointer',

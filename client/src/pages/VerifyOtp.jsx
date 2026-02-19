@@ -10,6 +10,7 @@ export default function VerifyOtp() {
     const navigate = useNavigate();
     const location = useLocation();
     const email = location.state?.email;
+    const phoneNumber = location.state?.phoneNumber;
 
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [loading, setLoading] = useState(false);
@@ -17,11 +18,11 @@ export default function VerifyOtp() {
     const inputRefs = useRef([]);
 
     useEffect(() => {
-        if (!email) {
-            toast.error("No email to verify. Please login first.");
+        if (!email && !phoneNumber) {
+            toast.error("No verification details found. Please login first.");
             navigate("/login");
         }
-    }, [email, navigate]);
+    }, [email, phoneNumber, navigate]);
 
     const handleChange = (index, e) => {
         const value = e.target.value;
@@ -72,14 +73,24 @@ export default function VerifyOtp() {
         setError("");
 
         try {
-            const res = await API.post("/auth/verify-otp", { email, otp: otpValue });
+            let res;
+            if (phoneNumber) {
+                res = await API.post("/auth/verify-otp-phone", { phoneNumber, otp: otpValue });
+            } else {
+                res = await API.post("/auth/verify-otp", { email, otp: otpValue });
+            }
 
             // Save token and user
             localStorage.setItem("token", res.data.token);
             setUser(res.data.user);
 
-            toast.success("Verification successful!");
-            navigate(location.state?.from || "/dashboard");
+            if (res.data.user.detailsRequired) {
+                toast.success("Verification successful! Please complete your profile.");
+                navigate("/complete-profile");
+            } else {
+                toast.success("Verification successful!");
+                navigate(location.state?.from || "/dashboard");
+            }
         } catch (err) {
             console.error(err);
             setError(err.response?.data?.error || "Verification failed");
@@ -109,10 +120,14 @@ export default function VerifyOtp() {
 
         setLoading(true);
         try {
-            await API.post("/auth/resend-otp", { email });
+            if (phoneNumber) {
+                await API.post("/auth/send-otp-phone", { phoneNumber });
+            } else {
+                await API.post("/auth/resend-otp", { email });
+            }
             setTimer(40);
             setCanResend(false);
-            toast.success("Code resent to your email!");
+            toast.success(`Code resent to your ${phoneNumber ? 'phone' : 'email'}!`);
         } catch (err) {
             toast.error("Failed to resend OTP");
         } finally {
@@ -126,11 +141,11 @@ export default function VerifyOtp() {
                 <div className="otp-icon">
                     🔐
                 </div>
-                <h2 className="otp-title">Verify Your Email</h2>
+                <h2 className="otp-title">Verify Your {phoneNumber ? 'Phone' : 'Email'}</h2>
                 <p className="otp-subtitle">
                     We've sent a 6-digit verification code to
                     <br />
-                    <span className="otp-email-highlight">{email}</span>
+                    <span className="otp-email-highlight">{phoneNumber || email}</span>
                 </p>
 
                 <div className="otp-input-group">
