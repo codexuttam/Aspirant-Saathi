@@ -3,60 +3,90 @@ const nodemailer = require("nodemailer");
 // Simple transporter setup
 // In production, user would provide SMTP credentials
 const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
 // HTML Template for OTP
-const otpTemplate = (otp) => `
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-  <div style="background-color: #0f172a; padding: 20px; text-align: center;">
-    <h1 style="color: #ffffff; margin: 0;">Aspirant-Saathi</h1>
-  </div>
-  <div style="padding: 30px; background-color: #ffffff;">
-    <h2 style="color: #333333; margin-top: 0;">Verify Your Email Address</h2>
-    <p style="color: #666666; font-size: 16px; line-height: 1.5;">
-      Hi there,
-    </p>
-    <p style="color: #666666; font-size: 16px; line-height: 1.5;">
-      Thank you for being part of Aspirant-Saathi. Please use the following One-Time Password (OTP) to verify your account or login.
-    </p>
-    <div style="background-color: #f3f4f6; padding: 15px; border-radius: 6px; text-align: center; margin: 25px 0;">
-      <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #3b82f6;">${otp}</span>
+const otpTemplate = (otp, action) => {
+  const isLogin = action === 'login';
+  const headerText = isLogin ? "Welcome Back!" : "Welcome to Aspirant-Saathi!";
+  const subText = isLogin
+    ? "Ready to crush your next study session? Securely log into your account with the OTP below."
+    : "You're one step away from joining the ultimate preparation platform! Verify your email with the OTP below.";
+  const heroImage = isLogin
+    ? "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80"
+    : "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80";
+
+  return `
+<div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background-color: #ffffff;">
+  
+  <!-- Hero Section -->
+  <div style="background-color: #0f172a; text-align: center; position: relative;">
+    <img src="${heroImage}" alt="Welcome" style="width: 100%; height: 200px; object-fit: cover; opacity: 0.8;" />
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, #0f172a, transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;">
+      <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: 1px;">Aspirant-Saathi</h1>
+      <p style="color: #60a5fa; margin: 5px 0 0 0; font-size: 16px; font-weight: 600;">Ignite Your Potential</p>
     </div>
-    <p style="color: #666666; font-size: 14px; margin-top: 20px;">
-      This OTP is valid for 10 minutes. Do not share this code with anyone.
-    </p>
   </div>
-  <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8;">
-    &copy; ${new Date().getFullYear()} Aspirant-Saathi. All rights reserved.
+
+  <!-- Content Section -->
+  <div style="padding: 40px 30px; background-color: #ffffff;">
+    <h2 style="color: #1e293b; margin-top: 0; font-size: 24px;">${headerText}</h2>
+    
+    <p style="color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+      Hi there, <br><br>
+      ${subText}
+    </p>
+
+    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 25px; border-radius: 12px; text-align: center; margin: 30px 0; border: 1px dashed #93c5fd;">
+      <p style="color: #1e3a8a; font-size: 14px; margin-top: 0; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Your OTP Code</p>
+      <span style="font-size: 42px; font-weight: 800; letter-spacing: 8px; color: #2563eb; text-shadow: 2px 2px 4px rgba(37, 99, 235, 0.2);">${otp}</span>
+    </div>
+
+    <p style="color: #64748b; font-size: 14px; text-align: left; background-color: #f8fafc; padding: 15px; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0;">
+      <strong style="color: #475569;">Security Notice:</strong> This OTP is valid for exactly 10 minutes. Never share this code with anyone. Our team will never ask for your OTP.
+    </p>
+    
+    <div style="margin-top: 30px; text-align: center;">
+      <a href="https://aspirantsaathi.com" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 50px; font-weight: 600; font-size: 15px; transition: background-color 0.3s;">Visit Dashboard</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
+    <p style="margin: 0;">&copy; ${new Date().getFullYear()} Aspirant-Saathi. Empowering Aspirants Worldwide.</p>
+    <p style="margin: 5px 0 0 0;">Need help? <a href="mailto:support@aspirantsaathi.com" style="color: #3b82f6; text-decoration: none;">Contact Support</a></p>
   </div>
 </div>
-`;
+  `;
+};
 
-exports.sendOTP = async (email, otp) => {
-    // If no credentials, log to console for development
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.log(`[DEV MODE] Email Service Skipped. OTP for ${email}: ${otp}`);
-        return;
-    }
+exports.sendOTP = async (email, otp, action = "register") => {
+  // If no credentials, log to console for development
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log(`[DEV MODE] Email Service Skipped. OTP for ${email}: ${otp}`);
+    return;
+  }
 
-    const mailOptions = {
-        from: `"Aspirant-Saathi Support" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: "Your OTP for Aspirant-Saathi 🔐",
-        html: otpTemplate(otp),
-    };
+  const subjectText = action === 'login' ? "Welcome Back! Your OTP 🔐" : "Verify Your Email 🚀";
 
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log(`OTP sent to ${email}`);
-    } catch (error) {
-        console.error("Error sending email:", error);
-        // Fallback log for dev if send fails
-        console.log(`[FALLBACK] OTP for ${email}: ${otp}`);
-    }
+  const mailOptions = {
+    from: `"Aspirant-Saathi Support" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: `Aspirant-Saathi: ${subjectText}`,
+    html: otpTemplate(otp, action),
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`OTP sent to ${email} (Action: ${action})`);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    // Fallback log for dev if send fails
+    console.log(`[FALLBACK] OTP for ${email}: ${otp}`);
+  }
 };

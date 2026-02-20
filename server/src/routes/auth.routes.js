@@ -62,7 +62,7 @@ router.post("/register", async (req, res) => {
   // 4. Send Email & Handle Failure
   try {
     const { sendOTP } = require("../utils/email");
-    await sendOTP(email, otp);
+    await sendOTP(email, otp, "register");
 
     res.json({
       message: "OTP sent to your email",
@@ -98,7 +98,7 @@ router.post("/login", async (req, res) => {
 
   // Send Email
   const { sendOTP } = require("../utils/email");
-  await sendOTP(user.email, otp);
+  await sendOTP(user.email, otp, "login");
 
   res.json({
     message: "OTP sent to your email",
@@ -158,7 +158,7 @@ router.post("/resend-otp", async (req, res) => {
 
   // Send Email
   const { sendOTP } = require("../utils/email");
-  await sendOTP(user.email, otp);
+  await sendOTP(user.email, otp, user.isVerified ? "login" : "register");
 
   res.json({ message: "OTP resent successfully" });
 });
@@ -345,8 +345,19 @@ router.post("/send-otp-phone", async (req, res) => {
       await user.save();
     }
 
-    // Simulate SMS
-    console.log(`[SMS SIMULATION] OTP for ${phoneNumber}: ${otp}`);
+    // Send SMS via Twilio
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
+      const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+      await twilioClient.messages.create({
+        body: `Your Aspirant-Saathi OTP is: ${otp}. Valid for 10 mins.`,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: phoneNumber,
+      });
+      console.log(`[HTTP GET SMS] OTP sent via Twilio to ${phoneNumber}`);
+    } else {
+      // Simulate SMS
+      console.log(`[SMS SIMULATION] OTP for ${phoneNumber}: ${otp}`);
+    }
 
     res.json({
       message: "OTP sent to your phone",
