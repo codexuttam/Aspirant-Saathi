@@ -117,7 +117,7 @@ const RefundPolicy = () => {
                     <section style={{ marginTop: '40px' }}>
                         <h2>3. Contact Support</h2>
                         <p>
-                            If you have trouble using this form, you can email us directly at <strong>support@aspirantsaathi.com</strong>.
+                            If you have trouble using this form, you can email us directly at <strong>aspirantsaathisuppport@gmail.com</strong>.
                         </p>
                     </section>
                 </div>

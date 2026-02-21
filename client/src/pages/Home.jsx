@@ -337,7 +337,9 @@ export default function Home() {
               <li><Link to="/" onClick={() => window.scrollTo(0, 0)}>Home</Link></li>
               <li><Link to="/about">About Us</Link></li>
               <li><Link to="/pricing">Pricing</Link></li>
-              <li><Link to="/login">Login</Link></li>
+              {!isLoggedIn() && (
+                <li><Link to="/login">Login</Link></li>
+              )}
             </ul>
           </div>
 
@@ -353,7 +355,7 @@ export default function Home() {
           <div className="footer-links-col">
             <h4>Contact</h4>
             <ul>
-              <li><a href="mailto:support@aspirantsaathi.com">support@aspirantsaathi.com</a></li>
+              <li><Link to="/contact">Contact Support</Link></li>
               <li><a href="#">Twitter</a></li>
               <li><a href="#">LinkedIn</a></li>
             </ul>

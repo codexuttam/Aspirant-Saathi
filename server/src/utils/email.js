@@ -59,7 +59,7 @@ const otpTemplate = (otp, action) => {
   <!-- Footer -->
   <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
     <p style="margin: 0;">&copy; ${new Date().getFullYear()} Aspirant-Saathi. Empowering Aspirants Worldwide.</p>
-    <p style="margin: 5px 0 0 0;">Need help? <a href="mailto:support@aspirantsaathi.com" style="color: #3b82f6; text-decoration: none;">Contact Support</a></p>
+    <p style="margin: 5px 0 0 0;">Need help? <a href="mailto:aspirantsaathisuppport@gmail.com" style="color: #3b82f6; text-decoration: none;">Contact Support</a></p>
   </div>
 </div>
   `;
@@ -88,5 +88,37 @@ exports.sendOTP = async (email, otp, action = "register") => {
     console.error("Error sending email:", error);
     // Fallback log for dev if send fails
     console.log(`[FALLBACK] OTP for ${email}: ${otp}`);
+  }
+};
+
+exports.sendContactEmail = async (name, email, subject, message) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log(`[DEV MODE] Contact form received from ${email} - subject: ${subject}`);
+    return;
+  }
+
+  const mailOptions = {
+    // Setting `from` to the support address to avoid Gmail throwing errors on impersonation
+    from: `"Aspirant-Saathi Contact" <${process.env.EMAIL_USER}>`,
+    to: "aspirantsaathisuppport@gmail.com", // The final destination
+    replyTo: email, // This allows the admin to hit "reply" and talk directly to the user
+    subject: `New Contact Form Submission: ${subject}`,
+    html: `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Subject:</strong> ${subject}</p>
+      <hr />
+      <p><strong>Message:</strong></p>
+      <p>${message.replace(/\n/g, '<br>')}</p>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Contact email sent from ${email}`);
+  } catch (error) {
+    console.error("Error sending contact email:", error);
+    throw error;
   }
 };
