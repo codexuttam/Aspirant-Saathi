@@ -4,9 +4,72 @@ import Navbar from "../components/Navbar";
 import HeroImage from "../assets/hero-illustration.png";
 import { isLoggedIn } from "../utils/auth";
 import ProfileMenu from "../components/ProfileMenu";
+import { toast } from "react-hot-toast";
 
+const MOTIVATIONAL_QUOTES = [
+  { text: "“Stop scrolling and start grinding, bestie. The merit list is waiting.”", author: "Chief Energy Officer", icon: "💅" },
+  { text: "“Manifesting that AIR 1 energy fr fr. No cap.”", author: "Vibe Curator", icon: "✨" },
+  { text: "“It's giving... future bureaucrat.”", author: "Main Character", icon: "👑" },
+  { text: "“Lock in. The syllabus ain't gonna finish itself.”", author: "The Reality Check", icon: "🔒" },
+  { text: "“Main character energy is clearing prelims on the first attempt.”", author: "Your Future Self", icon: "🎬" },
+  { text: "“W rizz in interview, but you gotta pass mains first.”", author: "The Rizzler", icon: "🗣️" },
+  { text: "“POV: You literally practiced answer writing instead of just watching strat vids.”", author: "Based Mentor", icon: "✍️" },
+  { text: "“Valid feelings, but those Laxmikanth chapters won't read themselves.”", author: "Polity Bro", icon: "📚" },
+  { text: "“Consistency is the only cheat code. Keep cooking.”", author: "The Chef", icon: "👨‍🍳" },
+  { text: "“You dropped this 👑. Now get back to answer writing.”", author: "Aspirant-Saathi", icon: "🔥" },
+  { text: "“Bro literally thought watching 10 topper talks equals studying 💀”", author: "Fact Checker", icon: "🤡" },
+  { text: "“Rent was due and you delivered that flawless essay answer.”", author: "Essay Evaluator", icon: "💸" },
+  { text: "“That answer structure is lowkey kinda fire though.”", author: "The Aesthetic Nerd", icon: "🔥" },
+  { text: "“Touch grass for 10 mins, then get back to the grind.”", author: "Wellness Check", icon: "🌿" },
+  { text: "“Bro thinks he's him passing without making notes.”", author: "The Note Taker", icon: "📝" },
+  { text: "“Secured the bag? Nah, secured the rank.”", author: "Hustle Mentor", icon: "💰" },
+  { text: "“The syllabus is massive, but so is your delusion. Go study.”", author: "Reality Check", icon: "👀" },
+  { text: "“Don't let LBSNAA be just an aesthetic on your Pinterest board.”", author: "Vibe Check", icon: "📌" },
+  { text: "“Stop letting the competition out-grind you while you doomscroll.”", author: "The Antagonist", icon: "📱" },
+  { text: "“Ate that mock test and left absolutely no crumbs.”", author: "Hype Man", icon: "🍽️" }
+];
 
 export default function Home() {
+  const handleEasterEggClick = () => {
+    const randomQuote = MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
+
+    toast.custom((t) => (
+      <div
+        className={`${t.visible ? 'animate-enter' : 'animate-leave'
+          }`}
+        style={{
+          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98))',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(147, 197, 253, 0.3)',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(59, 130, 246, 0.2)',
+          borderRadius: '16px',
+          padding: '20px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          maxWidth: '380px',
+          color: '#fff',
+          fontFamily: "'Inter', sans-serif",
+          transform: t.visible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.9)',
+          transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+          cursor: 'pointer'
+        }}
+        onClick={() => toast.dismiss(t.id)}
+      >
+        <div style={{ fontSize: '24px', marginBottom: '8px' }}>{randomQuote.icon}</div>
+        <div style={{ fontSize: '15.5px', fontWeight: '600', lineHeight: '1.5', letterSpacing: '-0.2px', marginBottom: '10px', color: '#f8fafc' }}>
+          {randomQuote.text}
+        </div>
+        <div style={{ fontSize: '13px', fontWeight: '500', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>
+          — {randomQuote.author}
+        </div>
+      </div>
+    ), {
+      duration: 5000,
+      position: 'bottom-right',
+    });
+  };
+
   return (
     <div className="home-wrapper">
       {/* NAVBAR */}
@@ -46,7 +109,11 @@ export default function Home() {
         </div>
 
         <div className="hero-visual">
-          <div className="hero-css-composition">
+          <div
+            className="hero-css-composition antigravity-hover"
+            onClick={handleEasterEggClick}
+            style={{ cursor: 'pointer' }}
+          >
             {/* Floating Papers Stack */}
             <div className="paper-stack">
               <div className="paper p1"></div>

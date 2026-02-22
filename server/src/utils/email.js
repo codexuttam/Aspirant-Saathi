@@ -181,3 +181,74 @@ exports.sendContactEmail = async (name, email, subject, message) => {
     throw error;
   }
 };
+
+exports.sendWelcomeEmail = async (name, email) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log(`[DEV MODE] Welcome email skipped for ${email}`);
+    return;
+  }
+
+  const welcomeMailOptions = {
+    from: `"Aspirant-Saathi" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: `Welcome to the Grind, ${name}! 🚀 Let's get that rank.`,
+    html: `
+      <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background-color: #0f172a; color: #ffffff;">
+        
+        <!-- Hero Image -->
+        <div style="text-align: center; position: relative;">
+          <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80" alt="Welcome to Aspirant-Saathi" style="width: 100%; height: 250px; object-fit: cover; opacity: 0.85;" />
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, #0f172a, transparent); padding: 30px 20px 15px;">
+            <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Welcome to the fam, ${name}! ✨</h1>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 30px 40px; background-color: #0f172a; border-top: 1px solid rgba(255,255,255,0.1);">
+          
+          <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1; margin-bottom: 25px;">
+            Bro really thought they could just study without evaluating their answers... 💀<br><br>
+            Just kidding! We're literally so hyped to have you here. You just unlocked the cheat code to answer writing. 
+            No more waiting days for feedback. No more guessing if your structure was right.
+          </p>
+
+          <!-- Vibe Check Box -->
+          <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.2) 100%); padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid rgba(59, 130, 246, 0.3);">
+            <h3 style="color: #60a5fa; font-size: 18px; margin-top: 0; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center;">
+              🎯 The Game Plan
+            </h3>
+            <ul style="color: #e2e8f0; font-size: 15px; line-height: 1.6; list-style-type: none; padding-left: 0; margin: 0;">
+              <li style="margin-bottom: 8px;">1️⃣ Write your answer (Handwritten or typed)</li>
+              <li style="margin-bottom: 8px;">2️⃣ Upload it to the platform</li>
+              <li style="margin-bottom: 0;">3️⃣ Get AI feedback instantly (and secure the bag 💼)</li>
+            </ul>
+          </div>
+
+          <p style="color: #94a3b8; font-size: 15px; margin-bottom: 30px;">
+            Honestly, it’s giving <em>future bureaucrat</em>. Time to start grinding and leaving absolutely zero crumbs on those answer sheets. 
+          </p>
+          
+          <!-- CTA -->
+          <div style="text-align: center; margin: 35px 0 10px;">
+            <a href="https://aspirantsaathi.com/submit" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); text-transform: uppercase; letter-spacing: 1px;">
+              WRITE YOUR FIRST ANSWER
+            </a>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #020617; padding: 25px; text-align: center; font-size: 13px; color: #64748b;">
+          <p style="margin: 0;">Aspirant-Saathi 👑</p>
+          <p style="margin: 5px 0 0 0;">Don't let the competition out-grind you while you doomscroll.</p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(welcomeMailOptions);
+    console.log(`Welcome email sent to ${email}`);
+  } catch (error) {
+    console.error("Error sending welcome email:", error);
+  }
+};

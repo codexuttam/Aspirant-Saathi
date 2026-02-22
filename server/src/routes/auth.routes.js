@@ -119,11 +119,18 @@ router.post("/verify-otp", async (req, res) => {
     return res.status(400).json({ error: "Invalid or expired OTP" });
   }
 
+  const isFirstTime = !user.isVerified;
+
   // Clear OTP and set Verified
   user.otp = undefined;
   user.otpExpires = undefined;
   user.isVerified = true;
   await user.save();
+
+  if (isFirstTime) {
+    const { sendWelcomeEmail } = require("../utils/email");
+    sendWelcomeEmail(user.name, user.email).catch(console.error);
+  }
 
   // Generate Token
   const token = jwt.sign({ id: user._id }, "secretkey");
@@ -285,6 +292,9 @@ router.post("/google", async (req, res) => {
         isVerified: true, // Google emails are verified
         password: "" // No password for Google users
       });
+
+      const { sendWelcomeEmail } = require("../utils/email");
+      sendWelcomeEmail(user.name, user.email).catch(console.error);
     } else {
       // Update existing user with Google ID and picture if missing
       if (!user.googleId) {
@@ -416,6 +426,9 @@ router.post("/complete-profile", require("../middleware/auth.middleware"), async
     const { name, email, exam } = req.body;
     const userId = req.userId;
 
+    const currentUser = await User.findById(userId);
+    const isFirstTimeEmail = !currentUser.email && !!email;
+
     const updates = {};
     if (name) updates.name = name;
     if (exam) updates.exam = exam;
@@ -430,6 +443,11 @@ router.post("/complete-profile", require("../middleware/auth.middleware"), async
     }
 
     const user = await User.findByIdAndUpdate(userId, updates, { new: true }).select("-password");
+
+    if (isFirstTimeEmail) {
+      const { sendWelcomeEmail } = require("../utils/email");
+      sendWelcomeEmail(user.name || currentUser.name || "Aspirant", user.email).catch(console.error);
+    }
 
     res.json({
       user,
