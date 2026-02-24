@@ -104,7 +104,7 @@ export default function InternalLayout({ children }) {
                             </svg>
                         </button>
                     </div>
-                    <div className="top-tabs" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '4px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                    <div className="top-tabs">
                         <Link to="/submit" className={`top-tab ${isActive('/submit')}`}>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>

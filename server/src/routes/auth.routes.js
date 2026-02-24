@@ -232,11 +232,13 @@ router.post("/avatar", require("../middleware/auth.middleware"), upload.single("
 // Update Profile (Name & Email)
 router.put("/update-profile", require("../middleware/auth.middleware"), async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, exam, hobbies } = req.body;
     const userId = req.userId;
 
     const updates = {};
     if (name) updates.name = name;
+    if (exam !== undefined) updates.exam = exam;
+    if (hobbies !== undefined) updates.hobbies = hobbies;
 
     // If email is being updated, check if it's already taken
     if (email) {

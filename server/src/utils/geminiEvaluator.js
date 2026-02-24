@@ -88,7 +88,7 @@ async function evaluateFromImage({ imagePath, question, exam, marks, answerText 
 
   // Construct the base prompt
   let prompt = `
-You are a highly critical, top-tier examiner for the ${exam} examination. Your task is to evaluate the student's answer with extreme rigor.
+You are a highly critical, top-tier examiner for the ${exam} examination. Your task is to evaluate the student's answer with extreme rigor and provide a completely fleshed-out, perfect model answer.
 
 Question: "${question}"
 Max Marks: ${m}
@@ -103,10 +103,11 @@ Evaluation Criteria:
 3. **Substantiation**: usage of examples, data, articles (for GS/Law), scholars (for Optional).
 
 Task:
-- Evaluate the answer (text/image) strictly against marks (${m}).
+- Evaluate the student's answer (text/image) strictly against marks (${m}).
 - Provide a score out of ${m}.
 - If the answer is too short for ${m} marks, penalize heavily.
 - For Essays, judge flow and coherence strictly.
+- In the "improvedAnswer" field, you MUST write a full, comprehensive, and perfect model answer that would score full marks. It must be written exactly as a topper would write it in the actual exam, following the exact word count (${wordCountGuide}) and structure (${structureGuide}). DO NOT give a brief outline. Write the complete answer.
 
 Respond ONLY in valid JSON format:
 
@@ -126,7 +127,7 @@ Respond ONLY in valid JSON format:
   "strengths": ["string", "string"],
   "weaknesses": ["string", "string"],
   "suggestions": ["string", "string"],
-  "improvedAnswer": "Brief outline or model improvement"
+  "improvedAnswer": "The completely written, perfect, exam-ready model answer. Must be extremely detailed, factual, and perfectly match the expected length, depth, and structure requirements."
 }
 `;
 
