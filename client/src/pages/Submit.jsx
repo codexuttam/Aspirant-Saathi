@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
-import Navbar from "../components/Navbar";
+import InternalLayout from "../components/InternalLayout";
 import ExamSelector from "../components/ExamSelector";
 import QuestionInput from "../components/QuestionInput";
 import AnswerUploader from "../components/AnswerUploader";
@@ -11,7 +11,6 @@ import "../styles/Submit.css";
 
 export default function Submit() {
     const navigate = useNavigate();
-    // Not changing this state, just noting it is correct.
     const [exam, setExam] = useState("UPSC CSE (Mains) - GS");
     const [marks, setMarks] = useState(10);
     const [showPopup, setShowPopup] = useState(false);
@@ -20,7 +19,6 @@ export default function Submit() {
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Helper to get allowed marks for the selected exam
     const getMarksOptions = (examName) => {
         if (!examName) return [10, 15]; // Default
 
@@ -70,18 +68,15 @@ export default function Submit() {
             alert("Answer submitted successfully");
             console.log(res.data);
 
-            // Update local user tokens
             if (res.data.tokens !== undefined) {
                 const currentUser = getUser();
                 if (currentUser) {
                     currentUser.tokens = res.data.tokens;
                     setUser(currentUser);
-                    // Dispatch event for Navbar/ProfileMenu to listen
                     window.dispatchEvent(new Event("userUpdated"));
                 }
             }
 
-            // Optional: Reset form
             setQuestion("");
             setAnswer("");
             setFile(null);
@@ -99,21 +94,28 @@ export default function Submit() {
     };
 
     return (
-        <div className="submit-wrapper">
-            <Navbar />
-
-            <div className="submit-container">
-                <header className="submit-header">
-                    <h1 className="submit-title">Submit Your Answer</h1>
-                    <p className="submit-subtitle">
-                        Get instant AI evaluation based on real examiner criteria.
-                    </p>
+        <InternalLayout>
+            <div className="submit-container" style={{ margin: "0 auto", padding: "0" }}>
+                <header className="submit-header" style={{ marginTop: "0", marginBottom: "32px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{
+                            width: "56px", height: "56px", borderRadius: "16px", background: "linear-gradient(135deg, #4f46e5 0%, #a855f7 100%)",
+                            display: "flex", alignItems: "center", justifyContent: "center", color: "white", boxShadow: "0 4px 14px rgba(79, 70, 229, 0.4)", transform: "rotate(-5deg)"
+                        }}>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: "rotate(5deg)" }}>
+                                <path d="M12 2L2 7l10 5 10-5-10-5Z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                        <h1 className="submit-title" style={{ fontSize: "36px", margin: 0, color: "#1e293b", fontWeight: "800", letterSpacing: "-1px" }}>
+                            Aspirant <span style={{ background: "linear-gradient(135deg, #4f46e5 0%, #a855f7 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Saathi</span>
+                        </h1>
+                    </div>
                 </header>
 
-                <div className="submit-card">
+                <div className="submit-card" style={{ padding: "32px", borderRadius: "16px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e9ecef", backgroundColor: "#fff" }}>
                     <div className="form-grid">
-
-                        {/* Exam Selection */}
                         <div className="form-row" style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
                             <div style={{ flex: 1 }}>
                                 <ExamSelector exam={exam} setExam={setExam} />
@@ -124,7 +126,7 @@ export default function Submit() {
                                     className="form-select"
                                     value={marks}
                                     onChange={(e) => setMarks(Number(e.target.value))}
-                                    style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #e2e8f0' }}
+                                    style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #e2e8f0', backgroundColor: '#f8fafc', fontWeight: '500' }}
                                 >
                                     {allowedMarks.map(m => (
                                         <option key={m} value={m}>{m} Marks</option>
@@ -133,40 +135,49 @@ export default function Submit() {
                             </div>
                         </div>
 
-                        {/* Question Input */}
                         <QuestionInput question={question} setQuestion={setQuestion} />
 
-                        {/* Answer Input */}
-                        <div className="form-group">
-                            <label className="form-label">
-                                Your Answer
-                                <span style={{ float: "right", fontSize: "0.85rem", color: "#64748b", fontWeight: "normal" }}>
+                        <div className="form-group" style={{ marginTop: '24px' }}>
+                            <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <span>Your Answer</span>
+                                <span style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: "normal" }}>
                                     {countWords(answer)} words
                                 </span>
                             </label>
                             <textarea
                                 className="form-textarea"
-                                rows="10"
+                                rows="8"
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
                                 placeholder="Type your answer here..."
+                                style={{ border: '2px solid #e2e8f0', borderRadius: '12px', padding: '16px', backgroundColor: '#f8fafc' }}
                             />
                         </div>
 
-                        <div className="divider">OR UPLOAD IMAGE</div>
+                        <div className="divider" style={{ margin: '32px 0', borderTop: '0', display: 'flex', alignItems: 'center', textAlign: 'center', color: '#94a3b8', fontSize: '12px', fontWeight: '600' }}>
+                            <span style={{ borderBottom: '1px solid #e2e8f0', flex: 1 }}></span>
+                            <span style={{ margin: '0 16px' }}>OR UPLOAD IMAGE</span>
+                            <span style={{ borderBottom: '1px solid #e2e8f0', flex: 1 }}></span>
+                        </div>
 
-                        {/* File Upload */}
                         <AnswerUploader file={file} setFile={setFile} />
 
                         <button
                             className="submit-btn"
                             onClick={handleSubmit}
                             disabled={loading}
+                            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)', boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)', width: '100%', marginTop: '32px', borderRadius: '12px', padding: '16px', fontSize: '16px' }}
                         >
                             {loading ? (
-                                <>Processing...</>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                                    Processing...
+                                </div>
                             ) : (
-                                <>Evaluate Answer ✨</>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    Evaluate Answer
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+                                </span>
                             )}
                         </button>
 
@@ -177,7 +188,9 @@ export default function Submit() {
             {showPopup && (
                 <div className="popup-overlay" onClick={() => setShowPopup(false)}>
                     <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-                        <div className="popup-icon">⚠️</div>
+                        <div className="popup-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', color: '#eab308' }}>
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </div>
                         <h3 className="popup-title">Missing Details!</h3>
                         <p className="popup-text">
                             Please provide a question and either an answer text or an image to proceed.
@@ -188,6 +201,6 @@ export default function Submit() {
                     </div>
                 </div>
             )}
-        </div>
+        </InternalLayout>
     );
 }

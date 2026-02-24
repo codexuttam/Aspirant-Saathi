@@ -110,7 +110,7 @@ export default function Home() {
 
         <div className="hero-visual">
           <div
-            className="hero-css-composition antigravity-hover"
+            className="hero-css-composition"
             onClick={handleEasterEggClick}
             style={{ cursor: 'pointer' }}
           >

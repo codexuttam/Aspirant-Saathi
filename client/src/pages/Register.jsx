@@ -219,8 +219,15 @@ export default function Register() {
           </div>
         )}
 
-        <button type="submit" disabled={loading} className="primary-btn-full">
-          {loading ? "Processing..." : (registerMethod === 'email' ? "Sign Up" : "Send OTP")}
+        <button type="submit" disabled={loading} className="primary-btn-full" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          {loading ? (
+            <>
+              <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+              </svg>
+              Processing...
+            </>
+          ) : (registerMethod === 'email' ? "Sign Up" : "Send OTP")}
         </button>
 
         <p className="auth-footer-text">

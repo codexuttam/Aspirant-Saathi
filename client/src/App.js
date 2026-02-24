@@ -21,6 +21,7 @@ import Pricing from "./pages/Pricing";
 import RefundPolicy from "./pages/RefundPolicy";
 import ScrollToTop from "./components/ScrollToTop";
 import ChatBot from "./components/ChatBot";
+import BulkEvaluator from "./pages/BulkEvaluator";
 
 
 function App() {
@@ -67,6 +68,15 @@ function App() {
           element={
             <PrivateRoute>
               <Submit />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/bulk-evaluator"
+          element={
+            <PrivateRoute>
+              <BulkEvaluator />
             </PrivateRoute>
           }
         />

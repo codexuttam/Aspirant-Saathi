@@ -252,3 +252,82 @@ exports.sendWelcomeEmail = async (name, email) => {
     console.error("Error sending welcome email:", error);
   }
 };
+
+exports.sendFeedbackEmail = async (name, email, rating, message) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log(`[DEV MODE] Feedback received from ${email} - Rating: ${rating}`);
+    return;
+  }
+
+  const adminMailOptions = {
+    from: `"Aspirant-Saathi Feedback" <${process.env.EMAIL_USER}>`,
+    to: "aspirantsaathisuppport@gmail.com",
+    replyTo: email,
+    subject: `New Product Feedback [${rating} Stars]`,
+    html: `
+      <h2>New Feedback Submission</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Rating:</strong> ${rating} Stars</p>
+      <hr />
+      <p><strong>Feedback:</strong></p>
+      <p>${message ? message.replace(/\n/g, '<br>') : "No message provided."}</p>
+    `,
+  };
+
+  try {
+    // 1. Send feedback to admin
+    await transporter.sendMail(adminMailOptions);
+    console.log(`Feedback email received from ${email}`);
+
+    // 2. Send thank you email to sender
+    const thankYouMailOptions = {
+      from: `"Aspirant-Saathi Support" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: `Thank you for your feedback, ${name}! ⭐`,
+      html: `
+        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background-color: #ffffff;">
+          
+          <div style="background-color: #0f172a; text-align: center; position: relative;">
+            <img src="https://images.unsplash.com/photo-1510936111840-65e1511433bb?auto=format&fit=crop&w=600&q=80" alt="Thank You for Feedback" style="width: 100%; height: 200px; object-fit: cover; opacity: 0.8;" />
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, #0f172a, transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: 1px;">Aspirant-Saathi</h1>
+              <p style="color: #fcd34d; margin: 5px 0 0 0; font-size: 16px; font-weight: 600;">Your insights drive us forward!</p>
+            </div>
+          </div>
+
+          <div style="padding: 40px 30px; background-color: #ffffff;">
+            <h2 style="color: #1e293b; margin-top: 0; font-size: 24px;">Hi ${name}, <br/>Thanks for rating us ${rating} stars!</h2>
+            
+            <p style="color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+              We really appreciate you taking the time to share your thoughts. User feedback is literally the cheat code that helps us level up and make Aspirant-Saathi the best answer evaluation tool for you.
+            </p>
+
+            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 25px; border-radius: 12px; text-align: center; margin: 30px 0; border: 1px dashed #fbbf24;">
+              <h3 style="color: #92400e; font-size: 18px; margin-top: 0; margin-bottom: 15px; font-weight: 700;">We're on it! 🛠️</h3>
+              <p style="color: #b45309; font-size: 15px; margin: 0; font-weight: 500;">
+                Our team carefully reviews all feedback. We're constantly grinding to bring new features, better evaluation, and a smoother experience based on what you tell us. Keep an eye out for updates!
+              </p>
+            </div>
+            
+            <div style="margin-top: 35px; text-align: center;">
+              <a href="https://aspirantsaathi.com/dashboard" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); transition: transform 0.2s;">Back to Dashboard</a>
+            </div>
+          </div>
+
+          <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
+            <p style="margin: 0;">&copy; ${new Date().getFullYear()} Aspirant-Saathi. Empowering Aspirants Worldwide.</p>
+            <p style="margin: 5px 0 0 0;">Need immediate help? <a href="mailto:aspirantsaathisuppport@gmail.com" style="color: #3b82f6; text-decoration: none;">Reply to this email</a></p>
+          </div>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(thankYouMailOptions);
+    console.log(`Thank you feedback email sent to ${email}`);
+
+  } catch (error) {
+    console.error("Error sending feedback email:", error);
+    throw error;
+  }
+};
