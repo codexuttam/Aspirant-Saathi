@@ -60,8 +60,13 @@ export default function ProfileMenu() {
 
       {open && (
         <div className="profile-card">
-          <p className="profile-name" style={{ margin: "0 0 4px 0", fontWeight: "600", color: "#1e293b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <p className="profile-name" style={{ margin: "0 0 4px 0", fontWeight: "600", color: "#1e293b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", display: "flex", alignItems: "center", gap: "6px" }}>
             {user?.name || "Aspirant"}
+            {user?.isPro && (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="gold" stroke="darkgoldenrod" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" title="Pro Aspirant">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            )}
           </p>
           <p className="profile-email-small" style={{ fontSize: "0.8rem", color: "#64748b", margin: "0 0 12px 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {user?.email}
@@ -70,7 +75,7 @@ export default function ProfileMenu() {
           <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '10px 8px', borderRadius: '8px', marginBottom: '12px', textAlign: 'center' }}>
             <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#3b82f6', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="2" y1="12" x2="4" y2="12"></line></svg>
-              {user?.tokens !== undefined ? user.tokens : '...'} Tokens
+              {user?.isPro ? 'Unlimited ∞' : (user?.tokens !== undefined ? user.tokens : '...')} Tokens
             </span>
             <Link to="/pricing" style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textDecoration: 'none', marginTop: '6px' }}>
               Get more →

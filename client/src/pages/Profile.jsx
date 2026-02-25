@@ -141,7 +141,14 @@ export default function Profile() {
                             onChange={handleImageUpload}
                         />
                         <div className="profile-info">
-                            <h1>{user?.name || "Aspirant"}</h1>
+                            <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                {user?.name || "Aspirant"}
+                                {user?.isPro && (
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="gold" stroke="darkgoldenrod" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" title="Pro Aspirant">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                    </svg>
+                                )}
+                            </h1>
                             <p className="profile-email">{user?.email || "user@example.com"}</p>
                         </div>
                     </div>
