@@ -1,9 +1,77 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
+import API from "../services/api";
+import { toast } from "react-hot-toast";
 import "../styles/Pricing.css";
 
 const Pricing = () => {
+    // Dynamically load Razorpay script
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, []);
+
+    const handlePayment = async () => {
+        const loadingToast = toast.loading("Initializing payment gateway...");
+        try {
+            // Get Razorpay key (optional, we could also use env var)
+            const { data: config } = await API.get('/payment/config');
+
+            // Create Order
+            const { data: order } = await API.post('/payment/create-order');
+
+            const options = {
+                key: config.key,
+                amount: order.amount,
+                currency: "INR",
+                name: "Aspirant-Saathi Pro",
+                description: "Upgrade to Pro Aspirant",
+                order_id: order.id,
+                theme: {
+                    color: "#3b82f6",
+                },
+                handler: async function (response) {
+                    try {
+                        toast.loading("Verifying payment...", { id: loadingToast });
+                        const { data } = await API.post('/payment/verify', response);
+
+                        if (data.isPro) {
+                            toast.success("Payment Successful! You are now a Pro Aspirant 🎉", { id: loadingToast });
+                            // Reload or update user object in local storage
+                            setTimeout(() => window.location.href = "/dashboard", 1500);
+                        }
+                    } catch (error) {
+                        console.error("Verification error:", error);
+                        toast.error("Payment verification failed. Contact support.", { id: loadingToast });
+                    }
+                },
+                prefill: {
+                    name: "Aspirant User",
+                }
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                toast.error("Payment failed or cancelled.", { id: loadingToast });
+            });
+
+            toast.dismiss(loadingToast);
+            rzp.open();
+
+        } catch (error) {
+            console.error("Payment initialization failed", error);
+            toast.error("Failed to initialize payment gateway.", { id: loadingToast });
+        }
+    };
     return (
         <div className="pricing-wrapper">
             <Navbar />
@@ -85,8 +153,8 @@ const Pricing = () => {
                             </div>
                         </div>
 
-                        <button className="plan-btn solid" onClick={() => alert("Premium gateway coming soon!")}>
-                            Explore Premium
+                        <button className="plan-btn solid" onClick={handlePayment}>
+                            Upgrade to Pro 🚀
                         </button>
                     </div>
                 </div>

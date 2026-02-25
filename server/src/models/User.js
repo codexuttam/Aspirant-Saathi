@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   otpExpires: Date,
   isVerified: { type: Boolean, default: false },
   tokens: { type: Number, default: 100 },
+  isPro: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model("User", userSchema);

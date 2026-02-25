@@ -11,6 +11,7 @@ const attemptRoutes = require("./routes/attempt.routes");
 const refundRoutes = require("./routes/refund.routes");
 const contactRoutes = require("./routes/contact.routes");
 const feedbackRoutes = require("./routes/feedback.routes");
+const paymentRoutes = require("./routes/payment.routes");
 
 const app = express();
 
@@ -21,17 +22,14 @@ app.use(express.json());
 // Serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-// Note: MongoDB connection is performed in server.js before starting the HTTP server.
-// This file only defines the Express app and routes so the server can decide when
-// to start listening (after DB connection is established).
-
 // Routes
-app.use("/api/auth", authRoutes);   // public auth routes
-app.use("/api", protectedRoutes);   // protected test route
-app.use("/api", submitRoutes);      // submit answer route
-app.use("/api", attemptRoutes);     // attempts + attempt details
-app.use("/api/refund", refundRoutes); // refund routes
-app.use("/api/contact", contactRoutes); // contact routes
-app.use("/api/feedback", feedbackRoutes); // feedback routes
+app.use("/api/auth", authRoutes);
+app.use("/api", protectedRoutes);
+app.use("/api", submitRoutes);
+app.use("/api", attemptRoutes);
+app.use("/api/refund", refundRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/feedback", feedbackRoutes);
+app.use("/api/payment", paymentRoutes);
 
 module.exports = app;
