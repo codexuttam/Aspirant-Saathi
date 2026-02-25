@@ -13,11 +13,14 @@ export default function InternalLayout({ children }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
 
     React.useEffect(() => {
+        // Force evaluation after mount to handle dynamic screen sizings reliably
+        if (window.innerWidth <= 768) {
+            setIsSidebarOpen(false);
+        }
+
         const handleResize = () => {
             if (window.innerWidth <= 768) {
                 setIsSidebarOpen(false);
-            } else {
-                setIsSidebarOpen(true);
             }
         };
         window.addEventListener('resize', handleResize);
