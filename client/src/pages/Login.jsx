@@ -22,7 +22,8 @@ export default function Login() {
     onSuccess: async (tokenResponse) => {
       try {
         const res = await API.post("/auth/google", {
-          access_token: tokenResponse.access_token
+          access_token: tokenResponse.access_token,
+          isLogin: true
         });
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
@@ -36,7 +37,7 @@ export default function Login() {
         }
       } catch (err) {
         console.error(err);
-        toast.error("Google Login Failed");
+        toast.error(err.response?.data?.error || "Google Login Failed");
       }
     },
     onError: () => toast.error("Google Login Failed"),

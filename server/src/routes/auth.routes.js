@@ -293,6 +293,7 @@ router.post("/google", async (req, res) => {
 
     const payload = await userInfoResponse.json();
     const { email, name, picture, sub: googleId } = payload;
+    const isLoginAction = req.body.isLogin === true;
 
     if (!email) return res.status(400).json({ error: "Email not provided by Google" });
 
@@ -301,6 +302,10 @@ router.post("/google", async (req, res) => {
     let isNewUser = false;
 
     if (!user) {
+      if (isLoginAction) {
+        return res.status(404).json({ error: "Account not found. Please sign up." });
+      }
+
       user = await User.create({
         name,
         email,
