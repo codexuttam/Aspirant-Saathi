@@ -12,15 +12,18 @@ const router = express.Router();
 
 const dns = require("dns").promises;
 
-// Helper to validate email domain
 async function isEmailDomainValid(email) {
   try {
     const domain = email.split("@")[1];
     if (!domain) return false;
-    const records = await dns.resolveMx(domain);
+    const records = await Promise.race([
+      dns.resolveMx(domain),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('DNS Timeout')), 2500))
+    ]);
     return records && records.length > 0;
   } catch (err) {
-    return false;
+    console.warn("DNS validation skipped/failed:", err.message);
+    return true; // Fallback to true so we don't block users if DNS fails
   }
 }
 
@@ -62,7 +65,13 @@ router.post("/register", async (req, res) => {
   // 4. Send Email & Handle Failure
   try {
     const { sendOTP } = require("../utils/email");
-    await sendOTP(email, otp, "register");
+
+    // Fire and forget with a short timeout to prevent UI hangs
+    const sendPromise = sendOTP(email, otp, "register");
+    await Promise.race([
+      sendPromise,
+      new Promise(resolve => setTimeout(resolve, 3000))
+    ]);
 
     res.json({
       message: "OTP sent to your email",
@@ -70,7 +79,6 @@ router.post("/register", async (req, res) => {
       otpSent: true
     });
   } catch (emailErr) {
-    // If sending fails, delete the user so they can try again
     await User.findByIdAndDelete(user._id);
     console.error("Email send failed:", emailErr);
     return res.status(500).json({ error: "Failed to send verification email. Please check your email address." });
@@ -96,9 +104,13 @@ router.post("/login", async (req, res) => {
   user.otpExpires = otpExpires;
   await user.save();
 
-  // Send Email
+  // Send Email with timeout
   const { sendOTP } = require("../utils/email");
-  await sendOTP(user.email, otp, "login");
+  const sendPromise = sendOTP(user.email, otp, "login");
+  await Promise.race([
+    sendPromise,
+    new Promise(resolve => setTimeout(resolve, 3000))
+  ]);
 
   res.json({
     message: "OTP sent to your email",
