@@ -290,3 +290,38 @@
         opacity: 1;
     }
 }
+
+@media (max-width: 768px) {
+    .dashboard-header-content {
+        flex-direction: column;
+        padding: 24px 20px;
+        text-align: center;
+        gap: 32px;
+    }
+
+    .welcome-text h1 {
+        font-size: 1.8rem;
+    }
+
+    .welcome-text p {
+        max-width: 100%;
+        margin-bottom: 24px;
+        font-size: 1rem;
+    }
+
+    .header-graphic {
+        justify-content: center;
+    }
+
+    .header-illustration {
+        max-width: 180px;
+    }
+
+    .daily-focus-card {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center;
+        padding: 24px !important;
+        gap: 16px !important;
+    }
+}

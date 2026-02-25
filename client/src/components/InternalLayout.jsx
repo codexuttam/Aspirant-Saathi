@@ -10,7 +10,7 @@ export default function InternalLayout({ children }) {
     const user = getUser();
     const [showMenu, setShowMenu] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
 
     const isActive = (path) => location.pathname === path ? "active" : "";
 
