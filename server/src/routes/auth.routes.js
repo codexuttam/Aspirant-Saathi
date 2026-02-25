@@ -127,9 +127,12 @@ router.post("/verify-otp", async (req, res) => {
   user.isVerified = true;
   await user.save();
 
+  const { sendWelcomeEmail, sendAdminNewUserNotification } = require("../utils/email");
+  // Always send welcome/login email
+  sendWelcomeEmail(user.name || "Aspirant", user.email, !isFirstTime).catch(console.error);
+
   if (isFirstTime) {
-    const { sendWelcomeEmail } = require("../utils/email");
-    sendWelcomeEmail(user.name, user.email).catch(console.error);
+    sendAdminNewUserNotification(user.name, user.email).catch(console.error);
   }
 
   // Generate Token
@@ -283,9 +286,9 @@ router.post("/google", async (req, res) => {
 
     // Find or Create User
     let user = await User.findOne({ email });
+    let isNewUser = false;
 
     if (!user) {
-      // Create new user
       user = await User.create({
         name,
         email,
@@ -294,9 +297,10 @@ router.post("/google", async (req, res) => {
         isVerified: true, // Google emails are verified
         password: "" // No password for Google users
       });
+      isNewUser = true;
 
-      const { sendWelcomeEmail } = require("../utils/email");
-      sendWelcomeEmail(user.name, user.email).catch(console.error);
+      const { sendAdminNewUserNotification } = require("../utils/email");
+      sendAdminNewUserNotification(user.name, user.email).catch(console.error);
     } else {
       // Update existing user with Google ID and picture if missing
       if (!user.googleId) {
@@ -307,6 +311,9 @@ router.post("/google", async (req, res) => {
 
       await user.save();
     }
+
+    const { sendWelcomeEmail } = require("../utils/email");
+    sendWelcomeEmail(user.name || "Aspirant", user.email, !isNewUser).catch(console.error);
 
     // Generate specific JWT
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "secretkey");

@@ -182,16 +182,28 @@ exports.sendContactEmail = async (name, email, subject, message) => {
   }
 };
 
-exports.sendWelcomeEmail = async (name, email) => {
+exports.sendWelcomeEmail = async (name, email, isLogin = false) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.log(`[DEV MODE] Welcome email skipped for ${email}`);
     return;
   }
 
+  const subject = isLogin
+    ? `Welcome back to the Grind, ${name}! 🚀 The competition isn't sleeping.`
+    : `Welcome to the Grind, ${name}! 🚀 Let's get that rank.`;
+
+  const heroHeading = isLogin
+    ? `Welcome back, ${name}! ✨`
+    : `Welcome to the fam, ${name}! ✨`;
+
+  const heroText = isLogin
+    ? `Back to the grind? We love to see it. 💀<br><br>Let's stay ahead of the curve. Keep evaluating your answers, improving your structure, and securing the bag. The ranking board is waiting for you.`
+    : `Bro really thought they could just study without evaluating their answers... 💀<br><br>Just kidding! We're literally so hyped to have you here. You just unlocked the cheat code to answer writing. No more waiting days for feedback. No more guessing if your structure was right.`;
+
   const welcomeMailOptions = {
     from: `"Aspirant-Saathi" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: `Welcome to the Grind, ${name}! 🚀 Let's get that rank.`,
+    subject: subject,
     html: `
       <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background-color: #0f172a; color: #ffffff;">
         
@@ -199,7 +211,7 @@ exports.sendWelcomeEmail = async (name, email) => {
         <div style="text-align: center; position: relative;">
           <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80" alt="Welcome to Aspirant-Saathi" style="width: 100%; height: 250px; object-fit: cover; opacity: 0.85;" />
           <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, #0f172a, transparent); padding: 30px 20px 15px;">
-            <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Welcome to the fam, ${name}! ✨</h1>
+            <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${heroHeading}</h1>
           </div>
         </div>
 
@@ -207,9 +219,7 @@ exports.sendWelcomeEmail = async (name, email) => {
         <div style="padding: 30px 40px; background-color: #0f172a; border-top: 1px solid rgba(255,255,255,0.1);">
           
           <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1; margin-bottom: 25px;">
-            Bro really thought they could just study without evaluating their answers... 💀<br><br>
-            Just kidding! We're literally so hyped to have you here. You just unlocked the cheat code to answer writing. 
-            No more waiting days for feedback. No more guessing if your structure was right.
+            ${heroText}
           </p>
 
           <!-- Vibe Check Box -->
@@ -250,6 +260,33 @@ exports.sendWelcomeEmail = async (name, email) => {
     console.log(`Welcome email sent to ${email}`);
   } catch (error) {
     console.error("Error sending welcome email:", error);
+  }
+};
+
+exports.sendAdminNewUserNotification = async (name, email) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
+
+  const mailOptions = {
+    from: `"Aspirant-Saathi System" <${process.env.EMAIL_USER}>`,
+    to: "aspirantsaathisuppport@gmail.com",
+    subject: `🚀 Secret Saathi Admin: New User Registration!`,
+    html: `
+      <div style="font-family: 'Inter', Arial, sans-serif; background-color: #f1f5f9; padding: 40px; border-radius: 12px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h2 style="color: #1e293b; margin-top: 0;">🎉 New User Registration!</h2>
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+          <p style="color: #475569; margin: 5px 0;"><strong>Name:</strong> ${name || "Not provided yet"}</p>
+          <p style="color: #475569; margin: 5px 0;"><strong>Email:</strong> ${email || "Not provided yet"}</p>
+        </div>
+        <p style="color: #64748b; font-size: 13px; margin-top: 20px;">Time: ${new Date().toLocaleString()}</p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Admin notification sent for new user: ${email}`);
+  } catch (error) {
+    console.error("Error sending admin notification:", error);
   }
 };
 
