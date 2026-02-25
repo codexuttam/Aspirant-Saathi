@@ -242,4 +242,13 @@
     .upgrade-pro-btn {
         display: none;
     }
+
+    .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1000;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+    }
 }

@@ -12,6 +12,24 @@ export default function InternalLayout({ children }) {
     const [showFeedback, setShowFeedback] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
 
+    React.useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 768) {
+                setIsSidebarOpen(false);
+            } else {
+                setIsSidebarOpen(true);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const handleMobileNavClick = () => {
+        if (window.innerWidth <= 768) {
+            setIsSidebarOpen(false);
+        }
+    };
+
     const isActive = (path) => location.pathname === path ? "active" : "";
 
     return (
@@ -23,12 +41,12 @@ export default function InternalLayout({ children }) {
                 <div className="sidebar-nav">
                     <div className="nav-section">
                         <p className="nav-label">MAIN</p>
-                        <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}>
+                        <Link to="/dashboard" onClick={handleMobileNavClick} className={`nav-link ${isActive('/dashboard')}`}>
                             <span className="icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
                             </span> Dashboard
                         </Link>
-                        <Link to="/" className="nav-link">
+                        <Link to="/" onClick={handleMobileNavClick} className="nav-link">
                             <span className="icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                             </span> Home
@@ -37,12 +55,12 @@ export default function InternalLayout({ children }) {
 
                     <div className="nav-section">
                         <p className="nav-label">AI TOOLS</p>
-                        <Link to="/submit" className={`nav-link ${isActive('/submit')}`}>
+                        <Link to="/submit" onClick={handleMobileNavClick} className={`nav-link ${isActive('/submit')}`}>
                             <span className="icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
                             </span> Answer Evaluator
                         </Link>
-                        <Link to="/bulk-evaluator" className={`nav-link ${isActive('/bulk-evaluator')}`}>
+                        <Link to="/bulk-evaluator" onClick={handleMobileNavClick} className={`nav-link ${isActive('/bulk-evaluator')}`}>
                             <span className="icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
                             </span> Bulk Evaluator
