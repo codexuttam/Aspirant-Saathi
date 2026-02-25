@@ -12,7 +12,7 @@ export default function Navbar() {
                 <div className="logo">Aspirant-Saathi</div>
             </Link>
 
-            <div className="nav-links" style={{ display: 'flex', gap: '20px', alignItems: 'center', marginLeft: 'auto', marginRight: '30px' }}>
+            <div className="nav-links" style={{ marginLeft: 'auto', marginRight: '30px' }}>
                 <Link to="/contact" className="nav-contact-btn">
                     <span className="contact-icon">💬</span> Contact Us
                 </Link>
