@@ -119,7 +119,9 @@ export default function InternalLayout({ children }) {
                         </Link>
                     </div>
                     <div className="header-right">
-                        <Link to="/pricing" className="upgrade-pro-btn">Upgrade to Pro</Link>
+                        {!user?.isPro && (
+                            <Link to="/pricing" className="upgrade-pro-btn">Upgrade to Pro</Link>
+                        )}
                         <ProfileMenu />
                     </div>
                 </header>
