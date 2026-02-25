@@ -14,9 +14,22 @@ router.get('/config', (req, res) => {
 
 router.post('/create-order', authMiddleware, async (req, res) => {
     try {
+        const keyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_fake_key';
+        const keySecret = process.env.RAZORPAY_KEY_SECRET || 'fake_secret';
+
+        // Developer / Demo Mode: Simulate payment if real keys don't exist
+        if (keyId.includes('rzp_test_zH6P') || keyId === 'rzp_test_fake_key') {
+            return res.json({
+                id: `order_fake_${Date.now()}`,
+                amount: 499 * 100,
+                currency: "INR",
+                isSimulated: true
+            });
+        }
+
         const instance = new Razorpay({
-            key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_fake_key', // Replace with valid keys in prod
-            key_secret: process.env.RAZORPAY_KEY_SECRET || 'fake_secret',
+            key_id: keyId,
+            key_secret: keySecret,
         });
 
         const options = {
@@ -26,12 +39,12 @@ router.post('/create-order', authMiddleware, async (req, res) => {
         };
 
         const order = await instance.orders.create(options);
-        if (!order) return res.status(500).send("Error creating order");
+        if (!order) return res.status(500).json({ error: "Error creating order from Razorpay" });
 
         res.json(order);
     } catch (error) {
         console.error("Order creation error:", error);
-        res.status(500).send(error);
+        res.status(500).json({ error: error?.error?.description || "Razorpay API Error: Verify your keys." });
     }
 });
 
@@ -60,6 +73,23 @@ router.post('/verify', authMiddleware, async (req, res) => {
         }
     } catch (error) {
         console.error("Verification error:", error);
+        res.status(500).json({ message: "Internal Server Error!" });
+    }
+});
+
+// SIMULATE ENDPOINT FOR DEMO
+router.post('/verify-simulated', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (user) {
+            user.isPro = true;
+            user.tokens = 99999;
+            await user.save();
+            return res.status(200).json({ message: "Simulated payment successful", isPro: true });
+        }
+        return res.status(404).json({ message: "User not found!" });
+    } catch (error) {
+        console.error("Simulated verification error:", error);
         res.status(500).json({ message: "Internal Server Error!" });
     }
 });

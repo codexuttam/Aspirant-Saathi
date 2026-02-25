@@ -13,6 +13,21 @@ API.interceptors.request.use((req) => {
   }
   return req;
 });
-
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      if (typeof window !== "undefined") {
+        // Only trigger this if we aren't already on the login page to prevent infinite loops
+        if (window.location.pathname !== "/login") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/login";
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default API;
