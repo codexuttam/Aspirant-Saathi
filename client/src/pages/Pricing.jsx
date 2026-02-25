@@ -56,7 +56,12 @@ const Pricing = () => {
 
                         if (data.isPro) {
                             toast.success("Payment Successful! You are now a Pro Aspirant 🎉", { id: loadingToast });
-                            // Reload or update user object in local storage
+                            // Update user object in local storage so the UI updates immediately
+                            const currentUser = JSON.parse(localStorage.getItem('user')) || {};
+                            currentUser.isPro = true;
+                            currentUser.tokens = 99999;
+                            localStorage.setItem('user', JSON.stringify(currentUser));
+
                             setTimeout(() => window.location.href = "/dashboard", 1500);
                         }
                     } catch (error) {
