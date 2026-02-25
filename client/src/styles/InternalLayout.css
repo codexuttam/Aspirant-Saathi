@@ -238,4 +238,8 @@
     .header-left {
         flex: 1;
     }
+
+    .upgrade-pro-btn {
+        display: none;
+    }
 }
