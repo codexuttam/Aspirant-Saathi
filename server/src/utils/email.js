@@ -15,7 +15,7 @@ const otpTemplate = (otp, action) => {
   const isLogin = action === 'login';
   const headerText = isLogin ? "Welcome Back!" : "Welcome to Aspirant-Saathi!";
   const subText = isLogin
-    ? "Ready to crush your next study session? Securely log into your account with the OTP below."
+    ? "We have been waiting for you! ⏳ Ready to crush your next study session? Securely log into your account with the OTP below."
     : "You're one step away from joining the ultimate preparation platform! Verify your email with the OTP below.";
   const heroImage = isLogin
     ? "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80"
@@ -197,7 +197,7 @@ exports.sendWelcomeEmail = async (name, email, isLogin = false) => {
     : `Welcome to the fam, ${name}! ✨`;
 
   const heroText = isLogin
-    ? `Back to the grind? We love to see it. 💀<br><br>Let's stay ahead of the curve. Keep evaluating your answers, improving your structure, and securing the bag. The ranking board is waiting for you.`
+    ? `We have been waiting for you! ⏳<br><br>Back to the grind? We love to see it. 💀<br><br>Let's stay ahead of the curve. Keep evaluating your answers, improving your structure, and securing the bag. The ranking board is waiting for you.`
     : `Bro really thought they could just study without evaluating their answers... 💀<br><br>Just kidding! We're literally so hyped to have you here. You just unlocked the cheat code to answer writing. No more waiting days for feedback. No more guessing if your structure was right.`;
 
   const welcomeMailOptions = {

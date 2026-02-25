@@ -82,10 +82,10 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ error: "Invalid credentials" });
+  if (!user) return res.status(404).json({ error: "Account not found. Please sign up." });
 
   const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).json({ error: "Invalid credentials" });
+  if (!match) return res.status(400).json({ error: "Incorrect password." });
 
   // Generate OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
