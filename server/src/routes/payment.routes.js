@@ -17,14 +17,8 @@ router.post('/create-order', authMiddleware, async (req, res) => {
         const keyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_fake_key';
         const keySecret = process.env.RAZORPAY_KEY_SECRET || 'fake_secret';
 
-        // Developer / Demo Mode: Simulate payment if real keys don't exist
-        if (keyId.includes('rzp_test_zH6P') || keyId === 'rzp_test_fake_key') {
-            return res.json({
-                id: `order_fake_${Date.now()}`,
-                amount: 499 * 100,
-                currency: "INR",
-                isSimulated: true
-            });
+        if (keyId === 'rzp_test_fake_key') {
+            return res.status(400).json({ error: "Razorpay keys are missing." });
         }
 
         const instance = new Razorpay({

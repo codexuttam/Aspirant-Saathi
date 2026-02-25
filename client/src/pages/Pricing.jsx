@@ -37,15 +37,7 @@ const Pricing = () => {
             // Create Order
             const { data: order } = await API.post('/payment/create-order');
 
-            if (order.isSimulated) {
-                toast.loading("Demo Mode: Proceeding with Simulated Payment...", { id: loadingToast });
-                const { data } = await API.post('/payment/verify-simulated', { order_id: order.id });
-                if (data.isPro) {
-                    toast.success("Simulated Payment Successful! You are now a Pro Aspirant 🎉", { id: loadingToast });
-                    setTimeout(() => window.location.href = "/dashboard", 1500);
-                }
-                return;
-            }
+
 
             const options = {
                 key: config.key,
