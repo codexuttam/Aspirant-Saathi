@@ -25,12 +25,8 @@ server/*.traineddata
 server/eng.traineddata
 server/models.json
 
-# Images / binary assets that shouldn't be in git
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.psd
+# Keep server uploads out of git
+# (Add specific paths if needed, e.g. server/uploads is already ignored)
 
 # VSCode
 .vscode/
