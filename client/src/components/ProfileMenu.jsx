@@ -30,11 +30,10 @@ export default function ProfileMenu() {
     };
   }, [menuRef]);
 
-  // Determine the correct image URL
   const getProfileImageUrl = () => {
     if (!user?.profileImage) return null;
-    if (user.profileImage.startsWith("http")) return user.profileImage;
-    return `http://localhost:5000${user.profileImage}`;
+    if (user.profileImage.startsWith("http") || user.profileImage.startsWith("data:")) return user.profileImage;
+    return `${process.env.REACT_APP_BACKEND_URL || "http://localhost:5000"}${user.profileImage}`;
   };
 
   const imageUrl = getProfileImageUrl();

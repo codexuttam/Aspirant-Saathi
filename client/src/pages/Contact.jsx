@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { toast } from "react-hot-toast";
+import API from "../services/api";
 import "../styles/Contact.css";
 
 export default function Contact() {
@@ -22,15 +23,10 @@ export default function Contact() {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch("http://localhost:5000/api/contact", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
+            const response = await API.post("/contact", formData);
+            const data = response.data;
 
-            const data = await response.json();
-
-            if (response.ok) {
+            if (response.status === 200 || response.status === 201) {
                 toast.success("Message sent! We will get back to you soon.");
                 setFormData({ name: "", email: "", subject: "", message: "" });
             } else {

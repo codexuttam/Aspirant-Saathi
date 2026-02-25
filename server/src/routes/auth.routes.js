@@ -133,7 +133,7 @@ router.post("/verify-otp", async (req, res) => {
   }
 
   // Generate Token
-  const token = jwt.sign({ id: user._id }, "secretkey");
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "secretkey");
 
   res.json({
     token,
@@ -309,7 +309,7 @@ router.post("/google", async (req, res) => {
     }
 
     // Generate specific JWT
-    const token = jwt.sign({ id: user._id }, "secretkey");
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "secretkey");
 
     res.json({
       token,
@@ -401,7 +401,7 @@ router.post("/verify-otp-phone", async (req, res) => {
     user.isVerified = true;
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, "secretkey");
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "secretkey");
 
     res.json({
       token,

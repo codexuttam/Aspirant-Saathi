@@ -119,7 +119,7 @@ export default function Profile() {
                             backgroundImage: (user?.profileImage && (user.profileImage.startsWith('http') || user.profileImage.startsWith('data:')))
                                 ? `url(${user.profileImage})`
                                 : user?.profileImage
-                                    ? `url(http://localhost:5000${user.profileImage})`
+                                    ? `url(${process.env.REACT_APP_BACKEND_URL || "http://localhost:5000"}${user.profileImage})`
                                     : 'none',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',

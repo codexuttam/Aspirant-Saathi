@@ -57,6 +57,7 @@ export default function Submit() {
         if (!options.includes(marks)) {
             setMarks(options[0]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [exam]);
 
     const handleSubmit = async () => {

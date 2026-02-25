@@ -88,7 +88,7 @@ export default function AttemptDetails() {
             {attempt.imagePath && (
               <div className="answer-image-container">
                 <img
-                  src={`http://localhost:5000/${attempt.imagePath}`}
+                  src={`${process.env.REACT_APP_BACKEND_URL || "http://localhost:5000"}/${attempt.imagePath}`}
                   alt="Uploaded answer"
                   className="answer-image"
                 />
