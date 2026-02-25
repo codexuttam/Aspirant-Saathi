@@ -7,7 +7,17 @@ import QuestionInput from "../components/QuestionInput";
 import AnswerUploader from "../components/AnswerUploader";
 import { countWords } from "../utils/wordCounter";
 import { getUser, setUser } from "../utils/auth";
+import { toast } from "react-hot-toast";
 import "../styles/Submit.css";
+
+const SUBMISSION_QUOTES = [
+    { text: "“Cooked and delivered. Now let the AI judge.”", author: "Answer Chef", icon: "🔥" },
+    { text: "“W rizz in answer writing. Great job!”", author: "The Rizzler", icon: "✨" },
+    { text: "“Main character energy activated. Your answer is in.”", author: "Main Character", icon: "👑" },
+    { text: "“Ate that question and left absolutely no crumbs.”", author: "Hype Man", icon: "🍽️" },
+    { text: "“Sent to the cloud. Hope you used the right keywords.”", author: "Tech Bro", icon: "☁️" },
+    { text: "“Secured the bag. Time for the evaluation.”", author: "Hustle Mentor", icon: "💰" }
+];
 
 export default function Submit() {
     const navigate = useNavigate();
@@ -65,7 +75,47 @@ export default function Submit() {
         try {
             setLoading(true);
             const res = await API.post("/submit", formData);
-            alert("Answer submitted successfully");
+
+            const randomQuote = SUBMISSION_QUOTES[Math.floor(Math.random() * SUBMISSION_QUOTES.length)];
+
+            toast.custom((t) => (
+                <div
+                    className={`${t.visible ? 'animate-enter' : 'animate-leave'}`}
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98))',
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid rgba(147, 197, 253, 0.3)',
+                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(59, 130, 246, 0.2)',
+                        borderRadius: '16px',
+                        padding: '20px 24px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        maxWidth: '380px',
+                        color: '#fff',
+                        fontFamily: "'Inter', sans-serif",
+                        transform: t.visible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.9)',
+                        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        cursor: 'pointer'
+                    }}
+                    onClick={() => toast.dismiss(t.id)}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', width: '100%', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>
+                        <div style={{ background: '#10b981', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span style={{ fontSize: '14px', fontWeight: '600', color: '#10b981' }}>Answer Submitted Successfully!</span>
+                    </div>
+                    <div style={{ fontSize: '24px', marginBottom: '8px' }}>{randomQuote.icon}</div>
+                    <div style={{ fontSize: '15.5px', fontWeight: '600', lineHeight: '1.5', letterSpacing: '-0.2px', marginBottom: '10px', color: '#f8fafc' }}>
+                        {randomQuote.text}
+                    </div>
+                    <div style={{ fontSize: '13px', fontWeight: '500', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        — {randomQuote.author}
+                    </div>
+                </div>
+            ), { duration: 5000, position: 'top-center' });
+
             console.log(res.data);
 
             if (res.data.tokens !== undefined) {

@@ -12,12 +12,6 @@ const ChatBot = () => {
 
     const toggleChat = () => setIsOpen(!isOpen);
 
-    const handleRefresh = () => {
-        setMessages([{ type: 'bot', text: 'Hello! How can I help you today?' }]);
-        setInput('');
-        setIsTyping(false);
-    };
-
     const getBotResponse = (userText) => {
         const text = userText.toLowerCase();
         if (text.includes('hi') || text.includes('hello') || text.includes('hey')) return 'Hi there! How can I assist you today?';
@@ -61,9 +55,6 @@ const ChatBot = () => {
                             </div>
                         </div>
                         <div className="header-actions" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                            <button className="refresh-btn" onClick={handleRefresh} title="Restart Chat" style={{ background: 'rgba(255, 255, 255, 0.15)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30px', height: '30px', borderRadius: '8px', padding: 0, transition: 'background-color 0.2s' }}>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21v-5h5"></path></svg>
-                            </button>
                             <button className="close-btn" onClick={toggleChat} title="Close Chat" style={{ background: 'rgba(255, 255, 255, 0.15)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30px', height: '30px', borderRadius: '8px', padding: 0, transition: 'background-color 0.2s', opacity: 1 }}>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>

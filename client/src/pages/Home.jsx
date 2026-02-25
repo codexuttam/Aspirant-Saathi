@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import "../styles/Home.css";
 import Navbar from "../components/Navbar";
-import HeroImage from "../assets/hero-illustration.png";
 import { isLoggedIn } from "../utils/auth";
-import ProfileMenu from "../components/ProfileMenu";
 import { toast } from "react-hot-toast";
 
 const MOTIVATIONAL_QUOTES = [
@@ -423,7 +421,9 @@ export default function Home() {
             <h4>Contact</h4>
             <ul>
               <li><Link to="/contact">Contact Support</Link></li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <li><a href="#">Twitter</a></li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <li><a href="#">LinkedIn</a></li>
             </ul>
           </div>
