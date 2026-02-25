@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { toast } from "react-hot-toast";
+import { isLoggedIn } from "../utils/auth";
 import "../styles/Pricing.css";
 
 const Pricing = () => {
+    const navigate = useNavigate();
     // Dynamically load Razorpay script
     useEffect(() => {
         const script = document.createElement("script");
@@ -21,6 +23,12 @@ const Pricing = () => {
     }, []);
 
     const handlePayment = async () => {
+        if (!isLoggedIn()) {
+            toast.error("Please log in first to upgrade to Pro! 🚀");
+            setTimeout(() => navigate("/login"), 1500);
+            return;
+        }
+
         const loadingToast = toast.loading("Initializing payment gateway...");
         try {
             // Get Razorpay key (optional, we could also use env var)
