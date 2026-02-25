@@ -15,17 +15,17 @@ async function evaluateFromImage({ imagePath, question, exam, marks, answerText 
 
   const m = Number(marks) || 10;
   if (m <= 10) {
-    wordCountGuide = "150 words";
-    depthGuide = "Concise, precise, focus on key points.";
+    wordCountGuide = "250-350 words (Extensive for 10 marks)";
+    depthGuide = "Highly detailed, precise, focus on key points with substantial depth.";
   } else if (m <= 15) {
-    wordCountGuide = "250 words";
-    depthGuide = "Detailed, include examples, multiple dimensions.";
+    wordCountGuide = "600-800 words (Very lengthy and detailed, 3-4 pages)";
+    depthGuide = "Extremely detailed, include numerous examples, multiple dimensions, comprehensive.";
   } else if (m <= 20) {
-    wordCountGuide = "300+ words";
-    depthGuide = "In-depth analysis, comprehensive coverage, way forward required.";
+    wordCountGuide = "1000-1500 words (Multiple pages, exhaustive)";
+    depthGuide = "Profound in-depth analysis, exhaustive coverage of every possible angle, way forward required.";
   } else {
-    wordCountGuide = "Essay length (1000-1200 words)";
-    depthGuide = "Extensive, multidimensional, argumentative, flow is critical.";
+    wordCountGuide = "Exhaustive length (2000-3000+ words, up to 10 pages)";
+    depthGuide = "Maximum extensive depth, multidimensional, argumentative, flow is critical, leave no stone unturned.";
   }
 
   // Define specific exam pattern instructions
@@ -107,7 +107,7 @@ Task:
 - Provide a score out of ${m}.
 - If the answer is too short for ${m} marks, penalize heavily.
 - For Essays, judge flow and coherence strictly.
-- In the "improvedAnswer" field, you MUST write a full, comprehensive, and perfect model answer that would score full marks. It must be written exactly as a topper would write it in the actual exam, following the exact word count (${wordCountGuide}) and structure (${structureGuide}). DO NOT give a brief outline. Write the complete answer.
+- In the "improvedAnswer" field, you MUST write an EXTREMELY LENGTHY, comprehensive, and perfect model answer that guarantees full marks (${m}/${m}) for the ${exam} exam. You MUST strictly follow the expected length (${wordCountGuide}). If the marks require exhaustive detail (even up to 10 pages), provide it. Do not hold back. Do not summarize. Do not give a brief outline. Write the complete, perfectly structured full-length answer exactly as the ultimate topper would write it.
 
 Respond ONLY in valid JSON format:
 
