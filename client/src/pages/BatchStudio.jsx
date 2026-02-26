@@ -186,23 +186,64 @@ export default function BatchStudio() {
 
     return (
         <InternalLayout>
-            <div className="batch-studio-container">
-                <div className="pro-feature-card">
-                    <div className="pro-icon-container">
-                        <div className="pro-icon" style={{ display: 'flex', color: '#4f46e5' }}>
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+            <div className="batch-studio-container" style={{ padding: '40px 20px', maxWidth: '850px', margin: '0 auto', textAlign: 'center' }}>
+                <div style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', padding: '48px', borderRadius: '24px', border: '1px solid #fcd34d', boxShadow: '0 10px 25px -5px rgba(251, 191, 36, 0.4)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '150px', height: '150px', background: 'rgba(255,255,255,0.3)', borderRadius: '50%', filter: 'blur(30px)' }}></div>
+                    <div style={{ position: 'absolute', bottom: '-20px', left: '-20px', width: '100px', height: '100px', background: 'rgba(217, 119, 6, 0.2)', borderRadius: '50%', filter: 'blur(20px)' }}></div>
+
+                    <div style={{ display: 'inline-flex', background: '#fff', padding: '16px', borderRadius: '50%', color: '#b45309', marginBottom: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                    </div>
+
+                    <h2 style={{ fontSize: '32px', fontWeight: '800', color: '#92400e', margin: '0 0 16px', letterSpacing: '-0.5px' }}>Wanna Explore the Batch Studio?</h2>
+
+                    <p style={{ fontSize: '18px', color: '#b45309', lineHeight: '1.6', margin: '0 auto 32px', maxWidth: '600px', fontWeight: '500' }}>
+                        Evaluating answers one by one is for amateurs. Pros upload their entire mock test at once, grab a coffee, and let our AI handle the rest. Why don't you join the elite?
+                    </p>
+
+                    <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <button
+                            onClick={() => navigate('/premium-details')}
+                            style={{ background: '#92400e', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: '12px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(146, 64, 14, 0.4)', transition: 'transform 0.2s' }}
+                            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                            onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            Join Premium Today
+                        </button>
+                        <button
+                            onClick={() => navigate(-1)}
+                            style={{ background: 'rgba(255,255,255,0.7)', color: '#92400e', border: '2px solid transparent', padding: '14px 28px', borderRadius: '12px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s' }}
+                            onMouseOver={(e) => e.currentTarget.style.border = '2px solid #b45309'}
+                            onMouseOut={(e) => e.currentTarget.style.border = '2px solid transparent'}
+                        >
+                            Go Back
+                        </button>
+                    </div>
+
+                    <div style={{ marginTop: '48px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', textAlign: 'left' }}>
+                        <div style={{ background: 'rgba(255,255,255,0.6)', padding: '24px', borderRadius: '16px' }}>
+                            <div style={{ color: '#d97706', marginBottom: '12px' }}>
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            </div>
+                            <h4 style={{ margin: '0 0 8px', color: '#92400e', fontSize: '17px', fontWeight: '700' }}>Unlimited Tokens</h4>
+                            <p style={{ margin: 0, color: '#b45309', fontSize: '14px', lineHeight: '1.5' }}>Never worry about running out of credits. Evaluate as much as you need.</p>
+                        </div>
+                        <div style={{ background: 'rgba(255,255,255,0.6)', padding: '24px', borderRadius: '16px' }}>
+                            <div style={{ color: '#d97706', marginBottom: '12px' }}>
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                            </div>
+                            <h4 style={{ margin: '0 0 8px', color: '#92400e', fontSize: '17px', fontWeight: '700' }}>Batch Processing</h4>
+                            <p style={{ margin: 0, color: '#b45309', fontSize: '14px', lineHeight: '1.5' }}>Upload up to 50 answers concurrently. A massive time saver for mock tests.</p>
+                        </div>
+                        <div style={{ background: 'rgba(255,255,255,0.6)', padding: '24px', borderRadius: '16px' }}>
+                            <div style={{ color: '#d97706', marginBottom: '12px' }}>
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                            </div>
+                            <h4 style={{ margin: '0 0 8px', color: '#92400e', fontSize: '17px', fontWeight: '700' }}>Priority AI Waitlist</h4>
+                            <p style={{ margin: 0, color: '#b45309', fontSize: '14px', lineHeight: '1.5' }}>Skip the queue. Pro members get top priority when AI servers are busy.</p>
                         </div>
                     </div>
-                    <h2 className="pro-title">Pro Feature</h2>
-                    <p className="pro-description">
-                        Evaluate multiple answers at once with AI-powered analysis. This feature is available exclusively to Pro users.
-                    </p>
-                    <button className="upgrade-action-btn" onClick={() => navigate("/pricing")}>
-                        Upgrade to Pro
-                    </button>
-                    <button className="go-back-link" onClick={() => navigate(-1)}>
-                        Go Back
-                    </button>
                 </div>
             </div>
         </InternalLayout>
