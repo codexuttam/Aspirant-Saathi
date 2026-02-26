@@ -173,25 +173,34 @@ router.post("/verify-otp", async (req, res) => {
 
 // Resend OTP
 router.post("/resend-otp", async (req, res) => {
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ error: "Email required" });
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: "Email required" });
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ error: "User not found" });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ error: "User not found" });
 
-  // Generate new OTP
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+    // Generate new OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
 
-  user.otp = otp;
-  user.otpExpires = otpExpires;
-  await user.save();
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
 
-  // Send Email
-  const { sendOTP } = require("../utils/email");
-  await sendOTP(user.email, otp, user.isVerified ? "login" : "register");
+    // Send Email
+    const { sendOTP } = require("../utils/email");
+    const sendPromise = sendOTP(user.email, otp, user.isVerified ? "login" : "register");
+    await Promise.race([
+      sendPromise,
+      new Promise(resolve => setTimeout(resolve, 3000))
+    ]);
 
-  res.json({ message: "OTP resent successfully" });
+    res.json({ message: "OTP resent successfully" });
+  } catch (error) {
+    console.error("Resend OTP error:", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 });
 
 // Check if email exists
