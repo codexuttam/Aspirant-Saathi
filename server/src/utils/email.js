@@ -8,6 +8,7 @@ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false, // true for 465, false for other ports
+  family: 4, // Force IPv4 routing to bypass Render's IPv6 timeout issues
   tls: {
     rejectUnauthorized: false
   },
