@@ -117,9 +117,9 @@ export default function Profile() {
                     <div className="profile-header" style={{ marginBottom: '24px' }}>
                         <div className="profile-avatar-large" style={{
                             backgroundImage: (user?.profileImage && (user.profileImage.startsWith('http') || user.profileImage.startsWith('data:')))
-                                ? `url(${user.profileImage})`
+                                ? `url("${user.profileImage}")`
                                 : user?.profileImage
-                                    ? `url(${process.env.REACT_APP_BACKEND_URL || "http://localhost:5000"}${user.profileImage})`
+                                    ? `url("${process.env.REACT_APP_BACKEND_URL || "http://localhost:5000"}${user.profileImage}")`
                                     : 'none',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',

@@ -45,7 +45,7 @@ export default function ProfileMenu() {
         title={user?.name || "Profile"}
         onClick={() => setOpen(!open)}
         style={{
-          backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
+          backgroundImage: imageUrl ? `url("${imageUrl}")` : 'none',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundColor: imageUrl ? 'transparent' : '#111827', // Fallback color

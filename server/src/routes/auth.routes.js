@@ -242,7 +242,9 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, `avatar-${Date.now()}-${file.originalname}`);
+    // Replace spaces and special characters with underscores to prevent CSS url() issues
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+    cb(null, `avatar-${Date.now()}-${safeName}`);
   },
 });
 const upload = multer({ storage });
