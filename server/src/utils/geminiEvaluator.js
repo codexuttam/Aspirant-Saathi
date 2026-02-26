@@ -208,4 +208,46 @@ Respond ONLY in valid JSON format:
   return JSON.parse(cleaned);
 }
 
-module.exports = evaluateFromImage;
+async function checkQuestionRelevance(question) {
+  const modelName = process.env.GEMINI_MODEL || "models/gemini-2.5-flash";
+  const model = genAI.getGenerativeModel({ model: modelName });
+
+  const prompt = `
+You are an AI assistant designed to filter questions submitted by students preparing for competitive exams (like UPSC, state PSC, writing practice, academic, general knowledge, etc). 
+
+Your task is to determine whether the submitted text is a valid, logical prompt that could reasonably be answered in an exam or evaluated as an essay/answer. 
+
+Return ONLY valid JSON format with a single boolean field "isRelevant".
+
+Examples of Irrelevant questions (Return {"isRelevant": false}):
+- "my name is shashank"
+- "hello there"
+- "how are you today"
+- "12345"
+- Gibberish like "asdfg"
+- "tell me a joke"
+
+Examples of Relevant questions (Return {"isRelevant": true}):
+- "Discuss the impact of climate change on Indian agriculture."
+- "What are the fundamental rights guaranteed by the Indian Constitution?"
+- "Critically analyze the role of non-cooperation movement in India's freedom struggle."
+- "Write an essay on Women Empowerment."
+- "Explain the doctrine of basic structure."
+
+Determine relevance for:
+"${question}"
+`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const rawText = result.response.text();
+    const cleaned = rawText.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(cleaned);
+    return parsed.isRelevant === true;
+  } catch (err) {
+    console.warn("Relevance check failed, proceeding to evaluation by default", err.message);
+    return true; // Fail open to not block actual evaluations on random generative errors
+  }
+}
+
+module.exports = { evaluateFromImage, checkQuestionRelevance };

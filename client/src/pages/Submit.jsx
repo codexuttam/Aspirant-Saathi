@@ -29,6 +29,8 @@ export default function Submit() {
     const [answer, setAnswer] = useState("");
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [showIrrelevantPopup, setShowIrrelevantPopup] = useState(false);
+    const [irrelevantMessage, setIrrelevantMessage] = useState("");
 
     const getMarksOptions = (examName) => {
         if (!examName) return [10, 15]; // Default
@@ -141,8 +143,11 @@ export default function Submit() {
             if (err.response && err.response.status === 402) {
                 alert("Insufficient tokens! Redirecting to pricing...");
                 navigate("/pricing");
+            } else if (err.response && err.response.status === 400 && err.response.data.error === "Irrelevant question") {
+                setIrrelevantMessage(err.response.data.message);
+                setShowIrrelevantPopup(true);
             } else {
-                alert("Submission failed");
+                alert("Submission failed: " + (err.response?.data?.error || err.message));
                 console.error(err);
             }
         } finally {
@@ -287,6 +292,22 @@ export default function Submit() {
                                 Deduct Tokens
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {showIrrelevantPopup && (
+                <div className="popup-overlay" onClick={() => setShowIrrelevantPopup(false)}>
+                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="popup-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', fontSize: '64px' }}>
+                            💅
+                        </div>
+                        <h3 className="popup-title" style={{ color: '#1e293b' }}>Hold up, bestie!</h3>
+                        <p className="popup-text" style={{ fontSize: '1.15rem', margin: '16px 0 24px 0', color: '#475569', fontWeight: '500' }}>
+                            {irrelevantMessage}
+                        </p>
+                        <button className="popup-btn" style={{ background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)', boxShadow: '0 4px 12px rgba(244, 63, 94, 0.3)' }} onClick={() => setShowIrrelevantPopup(false)}>
+                            Got it, I'll be serious! ✨
+                        </button>
                     </div>
                 </div>
             )}

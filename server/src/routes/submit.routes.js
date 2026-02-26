@@ -3,7 +3,7 @@ const authMiddleware = require("../middleware/auth.middleware");
 const upload = require("../utils/upload");
 const Attempt = require("../models/Attempt");
 const User = require("../models/User");
-const evaluateFromImage = require("../utils/geminiEvaluator");
+const { evaluateFromImage, checkQuestionRelevance } = require("../utils/geminiEvaluator");
 
 const router = express.Router();
 
@@ -30,6 +30,15 @@ router.post(
       if (!req.file && !answerText) {
         return res.status(400).json({
           error: "Either a handwritten answer image or answer text is required",
+        });
+      }
+
+      // Check if question is relevant
+      const isRelevant = await checkQuestionRelevance(question);
+      if (!isRelevant) {
+        return res.status(400).json({
+          error: "Irrelevant question",
+          message: "Honey please ask a relevant question so that I can evaluate it 💅✨"
         });
       }
 
