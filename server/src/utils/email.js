@@ -5,9 +5,10 @@ if (dns.setDefaultResultOrder) {
   dns.setDefaultResultOrder("ipv4first");
 }
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.gmail.com",
+  host: process.env.EMAIL_HOST || "smtp.mailersend.net",
   port: process.env.EMAIL_PORT ? parseInt(process.env.EMAIL_PORT) : 587,
   secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+  requireTLS: true,
   family: 4, // Force IPv4 routing to bypass Render's IPv6 timeout issues
   tls: {
     rejectUnauthorized: false
@@ -67,7 +68,7 @@ const otpTemplate = (otp, action) => {
   <!-- Footer -->
   <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
     <p style="margin: 0;">&copy; ${new Date().getFullYear()} Aspirant-Saathi. Empowering Aspirants Worldwide.</p>
-    <p style="margin: 5px 0 0 0;">Need help? <a href="mailto:aspirantsaathisuppport@gmail.com" style="color: #3b82f6; text-decoration: none;">Contact Support</a></p>
+  <p style="margin: 5px 0 0 0;">Need help? <a href="mailto:support@test-nrw7gymwv7jg2k8e.mlsender.net" style="color: #3b82f6; text-decoration: none;">Contact Support</a></p>
   </div>
 </div>
   `;
@@ -83,7 +84,7 @@ exports.sendOTP = async (email, otp, action = "register") => {
   const subjectText = action === 'login' ? "Welcome Back! Your OTP 🔐" : "Verify Your Email 🚀";
 
   const mailOptions = {
-    from: `"Aspirant-Saathi Support" <${process.env.EMAIL_USER}>`,
+    from: `"Aspirant-Saathi Support" <support@test-nrw7gymwv7jg2k8e.mlsender.net>`,
     to: email,
     subject: `Aspirant-Saathi: ${subjectText}`,
     html: otpTemplate(otp, action),
@@ -106,9 +107,9 @@ exports.sendContactEmail = async (name, email, subject, message) => {
   }
 
   const mailOptions = {
-    // Setting `from` to the support address to avoid Gmail throwing errors on impersonation
-    from: `"Aspirant-Saathi Contact" <${process.env.EMAIL_USER}>`,
-    to: "aspirantsaathisuppport@gmail.com", // The final destination
+    // Setting `from` to the support address to avoid impersonation issues
+    from: `"Aspirant-Saathi Contact" <support@test-nrw7gymwv7jg2k8e.mlsender.net>`,
+    to: "support@test-nrw7gymwv7jg2k8e.mlsender.net", // The final destination
     replyTo: email, // This allows the admin to hit "reply" and talk directly to the user
     subject: `New Contact Form Submission: ${subject}`,
     html: `
@@ -129,7 +130,7 @@ exports.sendContactEmail = async (name, email, subject, message) => {
 
     // 2. Send the auto-reply "Thank you" email to the sender
     const thankYouMailOptions = {
-      from: `"Aspirant-Saathi Support" <${process.env.EMAIL_USER}>`,
+      from: `"Aspirant-Saathi Support" <support@test-nrw7gymwv7jg2k8e.mlsender.net>`,
       to: email, // Send to the person who filled out the form
       subject: `Thank you for reaching out, ${name}! 😊`,
       html: `
@@ -175,7 +176,7 @@ exports.sendContactEmail = async (name, email, subject, message) => {
           <!-- Footer -->
           <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
             <p style="margin: 0;">&copy; ${new Date().getFullYear()} Aspirant-Saathi. Empowering Aspirants Worldwide.</p>
-            <p style="margin: 5px 0 0 0;">Need immediate help? <a href="mailto:aspirantsaathisuppport@gmail.com" style="color: #3b82f6; text-decoration: none;">Reply to this email</a></p>
+            <p style="margin: 5px 0 0 0;">Need immediate help? <a href="mailto:support@test-nrw7gymwv7jg2k8e.mlsender.net" style="color: #3b82f6; text-decoration: none;">Reply to this email</a></p>
           </div>
         </div>
       `,
