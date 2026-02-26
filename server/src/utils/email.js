@@ -5,9 +5,9 @@ if (dns.setDefaultResultOrder) {
   dns.setDefaultResultOrder("ipv4first");
 }
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  host: process.env.EMAIL_HOST || "smtp.gmail.com",
+  port: process.env.EMAIL_PORT ? parseInt(process.env.EMAIL_PORT) : 587,
+  secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
   family: 4, // Force IPv4 routing to bypass Render's IPv6 timeout issues
   tls: {
     rejectUnauthorized: false
