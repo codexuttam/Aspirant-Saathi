@@ -24,6 +24,7 @@ export default function Submit() {
     const [exam, setExam] = useState("UPSC CSE (Mains) - GS");
     const [marks, setMarks] = useState(10);
     const [showPopup, setShowPopup] = useState(false);
+    const [showTokenConfirm, setShowTokenConfirm] = useState(false);
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
     const [file, setFile] = useState(null);
@@ -60,12 +61,17 @@ export default function Submit() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [exam]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         if (!question || (!answer && !file)) {
             setShowPopup(true);
             return;
         }
 
+        setShowTokenConfirm(true);
+    };
+
+    const processSubmit = async () => {
+        setShowTokenConfirm(false);
         const formData = new FormData();
         formData.append("exam", exam);
         formData.append("marks", marks);
@@ -249,6 +255,38 @@ export default function Submit() {
                         <button className="popup-btn" onClick={() => setShowPopup(false)}>
                             Got it!
                         </button>
+                    </div>
+                </div>
+            )}
+            {showTokenConfirm && (
+                <div className="popup-overlay" onClick={() => setShowTokenConfirm(false)}>
+                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="popup-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#token-gradient)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <defs>
+                                    <linearGradient id="token-gradient" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stopColor="#4f46e5" />
+                                        <stop offset="100%" stopColor="#a855f7" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+                                <path d="M12 18V6"></path>
+                            </svg>
+                        </div>
+                        <h3 className="popup-title" style={{ color: '#1e293b' }}>Confirm Usage</h3>
+                        <p className="popup-text" style={{ fontSize: '1.05rem', margin: '16px 0 24px 0', color: '#475569' }}>
+                            Ready to evaluate? This action will use <br />
+                            <strong style={{ fontSize: '1.4rem', color: '#4f46e5', display: 'inline-block', marginTop: '8px' }}>{file ? 20 : 5} Tokens</strong>
+                        </p>
+                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between' }}>
+                            <button className="popup-btn" style={{ background: '#f1f5f9', color: '#475569', flex: 1, boxShadow: 'none' }} onClick={() => setShowTokenConfirm(false)}>
+                                Cancel
+                            </button>
+                            <button className="popup-btn" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #9333ea 100%)', flex: 1.5, boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)' }} onClick={processSubmit}>
+                                Deduct Tokens
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

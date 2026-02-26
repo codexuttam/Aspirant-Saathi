@@ -368,3 +368,71 @@ exports.sendFeedbackEmail = async (name, email, rating, message) => {
     throw error;
   }
 };
+
+exports.sendProUpgradeEmail = async (name, email) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.log(`[DEV MODE] Pro upgrade email skipped for ${email}`);
+    return;
+  }
+
+  const subject = `You are now a PRO Aspirant, ${name}! 🏆`;
+
+  const proMailOptions = {
+    from: `"Aspirant-Saathi" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: subject,
+    html: `
+      <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background-color: #ffffff; color: #1e293b; border: 1px solid #e2e8f0;">
+        
+        <!-- Hero Image -->
+        <div style="text-align: center; position: relative;">
+          <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=600&q=80" alt="Pro Upgrade" style="width: 100%; height: 250px; object-fit: cover;" />
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 30px 20px 15px;">
+            <h1 style="margin: 0; font-size: 32px; font-weight: 800; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Welcome to Pro! 🌟</h1>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 30px 40px; background-color: #ffffff;">
+          <h2 style="color: #1e293b; font-size: 24px; margin-top: 0;">Thank you for upgrading, ${name}!</h2>
+          <p style="font-size: 16px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
+            We are so incredibly thrilled to welcome you to the <strong>Pro Aspirant</strong> family. Your commitment to grinding towards excellence is inspiring, and honestly? The competition doesn't stand a chance now. Let's secure that rank together.
+          </p>
+
+          <!-- Benefits Box -->
+          <div style="background: linear-gradient(135deg, rgba(254, 240, 138, 0.3) 0%, rgba(253, 224, 71, 0.1) 100%); padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid rgba(234, 179, 8, 0.3);">
+            <h3 style="color: #b45309; font-size: 18px; margin-top: 0; margin-bottom: 15px; font-weight: 700; display: flex; align-items: center;">
+              🚀 Your Pro Arsenal Unlocked:
+            </h3>
+            <ul style="color: #713f12; font-size: 15px; line-height: 1.8; list-style-type: none; padding-left: 0; margin: 0;">
+              <li><strong style="color: #854d0e;">💎 Unlimited Tokens</strong> - Never worry about reloading again.</li>
+              <li><strong style="color: #854d0e;">⚡ Batch Studio</strong> - Evaluate up to 10 answers simultaneously.</li>
+              <li><strong style="color: #854d0e;">🧠 Detailed Model Answers</strong> - Learn from AI-generated perfect answers.</li>
+              <li><strong style="color: #854d0e;">🏎️ Priority Evaluations</strong> - Skip the queue during peak hours.</li>
+            </ul>
+          </div>
+          
+          <!-- CTA -->
+          <div style="text-align: center; margin: 35px 0 20px;">
+            <a href="https://aspirantsaathi.com/premium-details" style="display: inline-block; background: linear-gradient(135deg, #eab308 0%, #b45309 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); text-transform: uppercase;">
+              View Your Pro Dashboard
+            </a>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #f8fafc; padding: 25px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
+          <p style="margin: 0;">Aspirant-Saathi 👑</p>
+          <p style="margin: 5px 0 0 0;">Issues with your subscription? <a href="https://aspirantsaathi.com/refund-policy" style="color: #3b82f6; text-decoration: none;">View our Refund Policy</a></p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(proMailOptions);
+    console.log(`Pro upgrade email sent to ${email}`);
+  } catch (error) {
+    console.error("Error sending pro upgrade email:", error);
+  }
+};

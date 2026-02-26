@@ -324,4 +324,39 @@
         padding: 24px !important;
         gap: 16px !important;
     }
+
+    .dashboard-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dashboard-header {
+        order: 1;
+    }
+
+    .daily-focus-container {
+        order: 2;
+        margin: 16px 0 32px 0 !important;
+    }
+
+    .stats-grid {
+        order: 3;
+    }
+
+    .recent-attempts {
+        order: 4;
+    }
+
+    .daily-focus-card .stat-label {
+        font-size: 0.85rem !important;
+    }
+
+    .daily-focus-card .quote-text {
+        font-size: 0.95rem !important;
+        line-height: 1.5 !important;
+    }
+
+    .daily-focus-card .quote-author {
+        font-size: 0.8rem !important;
+    }
 }

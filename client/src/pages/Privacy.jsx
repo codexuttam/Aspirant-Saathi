@@ -62,7 +62,7 @@ export default function Privacy() {
 
                 <section style={{ marginBottom: "30px", borderTop: "1px solid #e2e8f0", paddingTop: "20px" }}>
                     <p style={{ lineHeight: "1.6" }}>
-                        If you have any questions about this Privacy Policy, please contact us at <a href="mailto:privacy@aspirantsaathi.com" style={{ color: "#3b82f6", textDecoration: "none" }}>privacy@aspirantsaathi.com</a>.
+                        If you have any questions about this Privacy Policy, please contact us at <a href="mailto:aspirantsaathisuppport@gmail.com" style={{ color: "#3b82f6", textDecoration: "none" }}>aspirantsaathisuppport@gmail.com</a>.
                     </p>
                 </section>
             </div>

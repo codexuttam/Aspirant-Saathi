@@ -87,7 +87,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
 
                     <div className="contact-box">
                         <p>Need immediate help?</p>
-                        <a href="mailto:support@aspirantsaathi.com" className="email-us-btn">
+                        <a href="mailto:aspirantsaathisuppport@gmail.com" className="email-us-btn">
                             Mail us <span className="arrow">→</span>
                         </a>
                     </div>

@@ -63,10 +63,10 @@ export default function InternalLayout({ children }) {
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
                             </span> Answer Evaluator
                         </Link>
-                        <Link to="/bulk-evaluator" onClick={handleMobileNavClick} className={`nav-link ${isActive('/bulk-evaluator')}`}>
+                        <Link to="/batch-studio" onClick={handleMobileNavClick} className={`nav-link ${isActive('/batch-studio')}`}>
                             <span className="icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
-                            </span> Bulk Evaluator
+                            </span> Batch Studio
                         </Link>
                     </div>
                 </div>
@@ -76,7 +76,7 @@ export default function InternalLayout({ children }) {
                         <div className="settings-menu-popup" style={{
                             position: 'absolute', bottom: '100%', left: '0', width: '100%', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 -4px 15px rgba(0,0,0,0.1)', padding: '12px', zIndex: 10, marginBottom: '8px', border: '1px solid #e2e8f0'
                         }}>
-                            <Link to="/bulk-evaluator" className="nav-link premium-btn" style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', color: '#b45309', border: '1px solid #fcd34d', borderRadius: '8px', marginBottom: '12px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', padding: '12px' }}>
+                            <Link to="/batch-studio" className="nav-link premium-btn" style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', color: '#b45309', border: '1px solid #fcd34d', borderRadius: '8px', marginBottom: '12px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', padding: '12px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700', fontSize: '13px' }}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                                     GO PREMIUM
@@ -89,7 +89,7 @@ export default function InternalLayout({ children }) {
                                 Share Feedback
                             </button>
 
-                            <a href="mailto:support@aspirantsaathi.com" className="nav-link" style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: '10px 12px', fontSize: '14px', color: '#475569', display: 'flex', gap: '10px', alignItems: 'center', borderRadius: '8px', textDecoration: 'none' }}>
+                            <a href="mailto:aspirantsaathisuppport@gmail.com" className="nav-link" style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', padding: '10px 12px', fontSize: '14px', color: '#475569', display: 'flex', gap: '10px', alignItems: 'center', borderRadius: '8px', textDecoration: 'none' }}>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#10b981' }}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                                 Support Chat
                             </a>
@@ -125,20 +125,22 @@ export default function InternalLayout({ children }) {
                             </svg>
                         </button>
                     </div>
-                    <div className="top-tabs">
-                        <Link to="/submit" className={`top-tab ${isActive('/submit')}`}>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
-                                Answer Evaluator
-                            </span>
-                        </Link>
-                        <Link to="/bulk-evaluator" className={`top-tab ${isActive('/bulk-evaluator')}`}>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
-                                Bulk Evaluator
-                            </span>
-                        </Link>
-                    </div>
+                    {(location.pathname === '/submit' || location.pathname === '/batch-studio') && (
+                        <div className="top-tabs">
+                            <Link to="/submit" className={`top-tab ${isActive('/submit')}`}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                                    Answer Evaluator
+                                </span>
+                            </Link>
+                            <Link to="/batch-studio" className={`top-tab ${isActive('/batch-studio')}`}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+                                    Batch Studio
+                                </span>
+                            </Link>
+                        </div>
+                    )}
                     <div className="header-right">
                         {!user?.isPro && (
                             <Link to="/pricing" className="upgrade-pro-btn">Upgrade to Pro</Link>

@@ -137,6 +137,13 @@ router.post("/verify-otp", async (req, res) => {
   user.otp = undefined;
   user.otpExpires = undefined;
   user.isVerified = true;
+
+  // Developer / Testing account Pro Access
+  if (user.email === 'uttamrajsingh423@gmail.com') {
+    user.isPro = true;
+    user.tokens = 999999;
+  }
+
   await user.save();
 
   const { sendWelcomeEmail, sendAdminNewUserNotification } = require("../utils/email");
@@ -157,7 +164,9 @@ router.post("/verify-otp", async (req, res) => {
       name: user.name,
       email: user.email,
       profileImage: user.profileImage,
-      tokens: user.tokens
+      tokens: user.tokens,
+      isPro: user.isPro,
+      detailsRequired: !user.name || !user.exam
     }
   });
 });
@@ -199,6 +208,14 @@ router.get("/me", require("../middleware/auth.middleware"), async (req, res) => 
   try {
     const user = await User.findById(req.userId).select("-password");
     if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Developer / Testing account Pro Access
+    if (user.email === 'uttamrajsingh423@gmail.com') {
+      user.isPro = true;
+      user.tokens = 999999;
+      await user.save();
+    }
+
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: "Server error" });
@@ -325,9 +342,15 @@ router.post("/google", async (req, res) => {
         user.isVerified = true;
       }
       if (!user.profileImage) user.profileImage = picture;
-
-      await user.save();
     }
+
+    // Developer / Testing account Pro Access
+    if (user.email === 'uttamrajsingh423@gmail.com') {
+      user.isPro = true;
+      user.tokens = 999999;
+    }
+
+    await user.save();
 
     const { sendWelcomeEmail } = require("../utils/email");
     sendWelcomeEmail(user.name || "Aspirant", user.email, !isNewUser).catch(console.error);
@@ -344,7 +367,8 @@ router.post("/google", async (req, res) => {
         profileImage: user.profileImage,
         exam: user.exam, // Include exam
         detailsRequired: !user.exam, // If exam is missing, prompt for details
-        tokens: user.tokens
+        tokens: user.tokens,
+        isPro: user.isPro
       }
     });
 
@@ -437,7 +461,8 @@ router.post("/verify-otp-phone", async (req, res) => {
         profileImage: user.profileImage,
         exam: user.exam,
         detailsRequired: !user.name || !user.email || !user.exam,
-        tokens: user.tokens
+        tokens: user.tokens,
+        isPro: user.isPro
       }
     });
   } catch (err) {
@@ -483,6 +508,29 @@ router.post("/complete-profile", require("../middleware/auth.middleware"), async
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
+// Trigger Pro Upgrade Email manually (e.g. from Premium Details)
+router.post("/send-pro-welcome", require("../middleware/auth.middleware"), async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Ensure the user is genuinely pro
+    if (!user.isPro) {
+      return res.status(403).json({ error: "User is not on the Pro plan" });
+    }
+
+    const { sendProUpgradeEmail } = require("../utils/email");
+
+    // Fire the email
+    await sendProUpgradeEmail(user.name || "Aspirant", user.email);
+
+    res.json({ message: "Pro welcome email sent successfully" });
+  } catch (err) {
+    console.error("Failed to send Pro Welcome Mail:", err);
+    res.status(500).json({ error: "Failed to send email" });
   }
 });
 

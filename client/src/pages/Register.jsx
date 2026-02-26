@@ -60,7 +60,7 @@ export default function Register() {
         });
         if (res.data.otpSent) {
           toast.success("Account created! Please verify your email.");
-          navigate("/verify-otp", { state: { email: form.email, from: "/login" } });
+          navigate("/verify-otp", { state: { email: form.email, from: "/dashboard" } });
         } else {
           toast.success("Registration successful! Please log in.");
           navigate("/login");

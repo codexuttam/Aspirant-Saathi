@@ -73,13 +73,27 @@ export default function ProfileMenu() {
           </p>
 
           <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '10px 8px', borderRadius: '8px', marginBottom: '12px', textAlign: 'center' }}>
-            <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#3b82f6', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="2" y1="12" x2="4" y2="12"></line></svg>
-              {user?.isPro ? 'Unlimited ∞' : (user?.tokens !== undefined ? user.tokens : '...')} Tokens
-            </span>
-            <Link to="/pricing" style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textDecoration: 'none', marginTop: '6px' }}>
-              Get more →
-            </Link>
+            {user?.isPro ? (
+              <Link to="/premium-details" style={{ textDecoration: 'none' }}>
+                <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#3b82f6', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="2" y1="12" x2="4" y2="12"></line></svg>
+                  Unlimited ∞ Tokens
+                </span>
+                <span style={{ display: 'block', fontSize: '0.75rem', color: '#10b981', marginTop: '6px', fontWeight: '600' }}>
+                  View Premium Info →
+                </span>
+              </Link>
+            ) : (
+              <>
+                <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#3b82f6', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="2" y1="12" x2="4" y2="12"></line></svg>
+                  {user?.tokens !== undefined ? user.tokens : '...'} Tokens
+                </span>
+                <Link to="/pricing" style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textDecoration: 'none', marginTop: '6px' }}>
+                  Get more →
+                </Link>
+              </>
+            )}
           </div>
 
           <Link to="/" className="menu-item" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#475569', padding: '8px', borderRadius: '6px' }}>

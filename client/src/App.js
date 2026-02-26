@@ -21,8 +21,8 @@ import Pricing from "./pages/Pricing";
 import RefundPolicy from "./pages/RefundPolicy";
 import ScrollToTop from "./components/ScrollToTop";
 import ChatBot from "./components/ChatBot";
-import BulkEvaluator from "./pages/BulkEvaluator";
-
+import BatchStudio from "./pages/BatchStudio";
+import PremiumDetails from "./pages/PremiumDetails";
 
 function App() {
   return (
@@ -73,10 +73,10 @@ function App() {
         />
 
         <Route
-          path="/bulk-evaluator"
+          path="/batch-studio"
           element={
             <PrivateRoute>
-              <BulkEvaluator />
+              <BatchStudio />
             </PrivateRoute>
           }
         />
@@ -95,6 +95,15 @@ function App() {
           element={
             <PrivateRoute>
               <ModelAnswer />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/premium-details"
+          element={
+            <PrivateRoute>
+              <PremiumDetails />
             </PrivateRoute>
           }
         />

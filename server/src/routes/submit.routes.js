@@ -44,10 +44,12 @@ router.post(
         await user.save();
       }
 
-      if (user.tokens < 5) {
+      const tokensNeeded = req.file ? 20 : 5;
+
+      if (user.tokens < tokensNeeded) {
         return res.status(402).json({
           error: "Insufficient tokens",
-          required: 5,
+          required: tokensNeeded,
           current: user.tokens,
           redirect: "/pricing"
         });
@@ -63,7 +65,7 @@ router.post(
       });
 
       // Deduct Tokens
-      user.tokens -= 5;
+      user.tokens -= tokensNeeded;
       await user.save();
 
       // 💾 Save attempt
