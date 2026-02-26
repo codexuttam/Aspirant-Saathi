@@ -101,7 +101,7 @@ export default function Profile() {
 
             setUser(res.data); // Update local storage
             setUserState(res.data); // Update state with confirmed URL
-            window.location.reload(); // Force reload to update Navbar/ProfileMenu image which relies on localStorage
+            window.dispatchEvent(new Event("userUpdated")); // Notify ProfileMenu to update without refreshing
         } catch (err) {
             console.error("Upload failed", err);
             alert("Failed to upload image");
