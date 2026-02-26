@@ -146,6 +146,16 @@ export default function Submit() {
             } else if (err.response && err.response.status === 400 && err.response.data.error === "Irrelevant question") {
                 setIrrelevantMessage(err.response.data.message);
                 setShowIrrelevantPopup(true);
+
+                // Keep tokens in sync for irrelevant question penalties
+                if (err.response.data.tokens !== undefined) {
+                    const currentUser = getUser();
+                    if (currentUser) {
+                        currentUser.tokens = err.response.data.tokens;
+                        setUser(currentUser);
+                        window.dispatchEvent(new Event("userUpdated"));
+                    }
+                }
             } else {
                 alert("Submission failed: " + (err.response?.data?.error || err.message));
                 console.error(err);
@@ -297,15 +307,26 @@ export default function Submit() {
             )}
             {showIrrelevantPopup && (
                 <div className="popup-overlay" onClick={() => setShowIrrelevantPopup(false)}>
-                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="popup-content" onClick={(e) => e.stopPropagation()} style={{ border: '2px solid #f43f5e', background: 'linear-gradient(to bottom, #fff, #fff1f2)' }}>
                         <div className="popup-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', fontSize: '64px' }}>
-                            💅
+                            ⚠️
                         </div>
-                        <h3 className="popup-title" style={{ color: '#1e293b' }}>Hold up, bestie!</h3>
-                        <p className="popup-text" style={{ fontSize: '1.15rem', margin: '16px 0 24px 0', color: '#475569', fontWeight: '500' }}>
+                        <h3 className="popup-title" style={{ color: '#e11d48', fontWeight: '800' }}>Hold up, bestie!</h3>
+                        <p className="popup-text" style={{ fontSize: '1.15rem', margin: '16px 0 12px 0', color: '#475569', fontWeight: '500' }}>
                             {irrelevantMessage}
                         </p>
-                        <button className="popup-btn" style={{ background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)', boxShadow: '0 4px 12px rgba(244, 63, 94, 0.3)' }} onClick={() => setShowIrrelevantPopup(false)}>
+
+                        <div style={{ background: 'rgba(244, 63, 94, 0.1)', border: '1px dashed #f43f5e', borderRadius: '12px', padding: '16px', marginBottom: '24px', textAlign: 'center' }}>
+                            <span style={{ fontSize: '1.4rem', fontWeight: '800', color: '#e11d48', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="2" y1="12" x2="4" y2="12"></line></svg>
+                                -10 Tokens Penalized
+                            </span>
+                            <span style={{ display: 'block', fontSize: '0.85rem', color: '#9f1239', marginTop: '6px', fontWeight: '600' }}>
+                                Warning: Keep questions relevant to the exam!
+                            </span>
+                        </div>
+
+                        <button className="popup-btn" style={{ background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)', boxShadow: '0 4px 12px rgba(225, 29, 72, 0.3)' }} onClick={() => setShowIrrelevantPopup(false)}>
                             Got it, I'll be serious! ✨
                         </button>
                     </div>

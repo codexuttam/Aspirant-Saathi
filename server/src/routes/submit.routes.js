@@ -33,16 +33,7 @@ router.post(
         });
       }
 
-      // Check if question is relevant
-      const isRelevant = await checkQuestionRelevance(question);
-      if (!isRelevant) {
-        return res.status(400).json({
-          error: "Irrelevant question",
-          message: "Honey please ask a relevant question so that I can evaluate it 💅✨"
-        });
-      }
-
-      // 0. Check Tokens
+      // 0. Fetch User
       const user = await User.findById(req.userId);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -53,9 +44,24 @@ router.post(
         await user.save();
       }
 
+      // Check if question is relevant
+      const isRelevant = await checkQuestionRelevance(question);
+      if (!isRelevant) {
+        // Penalty for irrelevant question
+        if (!user.isPro) {
+          user.tokens = Math.max(0, user.tokens - 10);
+          await user.save();
+        }
+        return res.status(400).json({
+          error: "Irrelevant question",
+          message: "Honey please ask a relevant question so that I can evaluate it 💅✨",
+          tokens: user.tokens // return updated tokens so frontend can update
+        });
+      }
+
       const tokensNeeded = req.file ? 20 : 5;
 
-      if (user.tokens < tokensNeeded) {
+      if (user.tokens < tokensNeeded && !user.isPro) {
         return res.status(402).json({
           error: "Insufficient tokens",
           required: tokensNeeded,
@@ -74,8 +80,10 @@ router.post(
       });
 
       // Deduct Tokens
-      user.tokens -= tokensNeeded;
-      await user.save();
+      if (!user.isPro) {
+        user.tokens -= tokensNeeded;
+        await user.save();
+      }
 
       // 💾 Save attempt
       const attempt = await Attempt.create({
