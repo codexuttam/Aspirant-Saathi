@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import CompleteProfile from "./pages/CompleteProfile";
 import Submit from "./pages/Submit";
 import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 import Dashboard from "./pages/Dashboard";
 import AttemptDetails from "./pages/AttemptDetails";
 import ModelAnswer from "./pages/ModelAnswer";
@@ -35,10 +36,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
-        <Route path="/complete-profile" element={<CompleteProfile />} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/verify-otp" element={<PublicRoute><VerifyOtp /></PublicRoute>} />
+        <Route path="/complete-profile" element={<PrivateRoute><CompleteProfile /></PrivateRoute>} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/pricing" element={<Pricing />} />
