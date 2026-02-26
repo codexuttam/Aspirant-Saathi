@@ -94,6 +94,8 @@
     font-size: 1.1rem;
     color: var(--text-main);
     font-weight: 500;
+    word-break: break-all;
+    overflow-wrap: break-word;
 }
 
 .stats-summary {
