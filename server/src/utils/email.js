@@ -1,9 +1,13 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
 
-// Simple transporter setup
-// In production, user would provide SMTP credentials
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder("ipv4first");
+}
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
