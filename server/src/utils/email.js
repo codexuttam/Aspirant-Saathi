@@ -19,6 +19,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Default from/admin address (use MAIL_FROM or EMAIL_FROM in env to override)
+const FROM_EMAIL = process.env.EMAIL_FROM || process.env.MAIL_FROM || 'aspirantsaathisuppport@gmail.com';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || FROM_EMAIL;
+
 // HTML Template for OTP
 const otpTemplate = (otp, action) => {
   const isLogin = action === 'login';
@@ -68,7 +72,7 @@ const otpTemplate = (otp, action) => {
   <!-- Footer -->
   <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
     <p style="margin: 0;">&copy; ${new Date().getFullYear()} Aspirant-Saathi. Empowering Aspirants Worldwide.</p>
-  <p style="margin: 5px 0 0 0;">Need help? <a href="mailto:support@test-nrw7gymwv7jg2k8e.mlsender.net" style="color: #3b82f6; text-decoration: none;">Contact Support</a></p>
+  <p style="margin: 5px 0 0 0;">Need help? <a href="mailto:${FROM_EMAIL}" style="color: #3b82f6; text-decoration: none;">Contact Support</a></p>
   </div>
 </div>
   `;
@@ -84,7 +88,7 @@ exports.sendOTP = async (email, otp, action = "register") => {
   const subjectText = action === 'login' ? "Welcome Back! Your OTP 🔐" : "Verify Your Email 🚀";
 
   const mailOptions = {
-    from: `"Aspirant-Saathi Support" <support@test-nrw7gymwv7jg2k8e.mlsender.net>`,
+    from: `"Aspirant-Saathi Support" <${FROM_EMAIL}>`,
     to: email,
     subject: `Aspirant-Saathi: ${subjectText}`,
     html: otpTemplate(otp, action),
@@ -108,8 +112,8 @@ exports.sendContactEmail = async (name, email, subject, message) => {
 
   const mailOptions = {
     // Setting `from` to the support address to avoid impersonation issues
-    from: `"Aspirant-Saathi Contact" <support@test-nrw7gymwv7jg2k8e.mlsender.net>`,
-    to: "support@test-nrw7gymwv7jg2k8e.mlsender.net", // The final destination
+    from: `"Aspirant-Saathi Contact" <${FROM_EMAIL}>`,
+    to: ADMIN_EMAIL, // The final destination
     replyTo: email, // This allows the admin to hit "reply" and talk directly to the user
     subject: `New Contact Form Submission: ${subject}`,
     html: `
@@ -130,7 +134,7 @@ exports.sendContactEmail = async (name, email, subject, message) => {
 
     // 2. Send the auto-reply "Thank you" email to the sender
     const thankYouMailOptions = {
-      from: `"Aspirant-Saathi Support" <support@test-nrw7gymwv7jg2k8e.mlsender.net>`,
+      from: `"Aspirant-Saathi Support" <${FROM_EMAIL}>`,
       to: email, // Send to the person who filled out the form
       subject: `Thank you for reaching out, ${name}! 😊`,
       html: `
@@ -176,7 +180,7 @@ exports.sendContactEmail = async (name, email, subject, message) => {
           <!-- Footer -->
           <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
             <p style="margin: 0;">&copy; ${new Date().getFullYear()} Aspirant-Saathi. Empowering Aspirants Worldwide.</p>
-            <p style="margin: 5px 0 0 0;">Need immediate help? <a href="mailto:support@test-nrw7gymwv7jg2k8e.mlsender.net" style="color: #3b82f6; text-decoration: none;">Reply to this email</a></p>
+            <p style="margin: 5px 0 0 0;">Need immediate help? <a href="mailto:${FROM_EMAIL}" style="color: #3b82f6; text-decoration: none;">Reply to this email</a></p>
           </div>
         </div>
       `,
@@ -210,7 +214,7 @@ exports.sendWelcomeEmail = async (name, email, isLogin = false) => {
     : `Bro really thought they could just study without evaluating their answers... 💀<br><br>Just kidding! We're literally so hyped to have you here. You just unlocked the cheat code to answer writing. No more waiting days for feedback. No more guessing if your structure was right.`;
 
   const welcomeMailOptions = {
-    from: `"Aspirant-Saathi" <${process.env.EMAIL_USER}>`,
+    from: `"Aspirant-Saathi" <${FROM_EMAIL}>`,
     to: email,
     subject: subject,
     html: `
@@ -276,8 +280,8 @@ exports.sendAdminNewUserNotification = async (name, email) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
 
   const mailOptions = {
-    from: `"Aspirant-Saathi System" <${process.env.EMAIL_USER}>`,
-    to: "aspirantsaathisuppport@gmail.com",
+    from: `"Aspirant-Saathi System" <${FROM_EMAIL}>`,
+    to: ADMIN_EMAIL,
     subject: `🚀 Secret Saathi Admin: New User Registration!`,
     html: `
       <div style="font-family: 'Inter', Arial, sans-serif; background-color: #f1f5f9; padding: 40px; border-radius: 12px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
@@ -306,8 +310,8 @@ exports.sendFeedbackEmail = async (name, email, rating, message) => {
   }
 
   const adminMailOptions = {
-    from: `"Aspirant-Saathi Feedback" <${process.env.EMAIL_USER}>`,
-    to: "aspirantsaathisuppport@gmail.com",
+    from: `"Aspirant-Saathi Feedback" <${FROM_EMAIL}>`,
+    to: ADMIN_EMAIL,
     replyTo: email,
     subject: `New Product Feedback [${rating} Stars]`,
     html: `
@@ -328,7 +332,7 @@ exports.sendFeedbackEmail = async (name, email, rating, message) => {
 
     // 2. Send thank you email to sender
     const thankYouMailOptions = {
-      from: `"Aspirant-Saathi Support" <${process.env.EMAIL_USER}>`,
+      from: `"Aspirant-Saathi Support" <${FROM_EMAIL}>`,
       to: email,
       subject: `Thank you for your feedback, ${name}! ⭐`,
       html: `
@@ -363,7 +367,7 @@ exports.sendFeedbackEmail = async (name, email, rating, message) => {
 
           <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
             <p style="margin: 0;">&copy; ${new Date().getFullYear()} Aspirant-Saathi. Empowering Aspirants Worldwide.</p>
-            <p style="margin: 5px 0 0 0;">Need immediate help? <a href="mailto:aspirantsaathisuppport@gmail.com" style="color: #3b82f6; text-decoration: none;">Reply to this email</a></p>
+            <p style="margin: 5px 0 0 0;">Need immediate help? <a href="mailto:${FROM_EMAIL}" style="color: #3b82f6; text-decoration: none;">Reply to this email</a></p>
           </div>
         </div>
       `,
@@ -387,7 +391,7 @@ exports.sendProUpgradeEmail = async (name, email) => {
   const subject = `You are now a PRO Aspirant, ${name}! 🏆`;
 
   const proMailOptions = {
-    from: `"Aspirant-Saathi" <${process.env.EMAIL_USER}>`,
+    from: `"Aspirant-Saathi" <${FROM_EMAIL}>`,
     to: email,
     subject: subject,
     html: `
