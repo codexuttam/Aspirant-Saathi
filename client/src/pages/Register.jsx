@@ -47,6 +47,28 @@ export default function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const generateStrongPassword = () => {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+    let pwd = "";
+    // Ensure at least one of each required type
+    pwd += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 26));
+    pwd += "abcdefghijklmnopqrstuvwxyz".charAt(Math.floor(Math.random() * 26));
+    pwd += "0123456789".charAt(Math.floor(Math.random() * 10));
+    pwd += "!@#$%^&*()_+".charAt(Math.floor(Math.random() * 12));
+
+    // Fill the rest to make it 14 characters
+    for (let i = 0; i < 10; i++) {
+      pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    // Shuffle the string
+    pwd = pwd.split('').sort(() => 0.5 - Math.random()).join('');
+
+    setForm({ ...form, password: pwd });
+    setShowPassword(true);
+    toast.success("Strong password generated!");
+  };
+
   // Submit Logic
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -169,7 +191,16 @@ export default function Register() {
 
             {/* Password Input */}
             <div className="form-group">
-              <label className="input-label">Password <span>*</span></label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label className="input-label" style={{ margin: 0 }}>Password <span>*</span></label>
+                <button
+                  type="button"
+                  onClick={generateStrongPassword}
+                  style={{ background: 'none', border: 'none', color: '#3b82f6', fontSize: '12px', cursor: 'pointer', fontWeight: '600' }}
+                >
+                  Auto-suggest strong password
+                </button>
+              </div>
               <div style={{ position: 'relative' }}>
                 <input
                   name="password"
@@ -199,6 +230,9 @@ export default function Register() {
                   )}
                 </span>
               </div>
+              <p style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>
+                Use a strong password: min 8 chars, 1 uppercase, 1 number, 1 special char.
+              </p>
             </div>
           </>
         )}
