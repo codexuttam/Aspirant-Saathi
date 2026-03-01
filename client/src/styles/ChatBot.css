@@ -34,8 +34,8 @@
     position: absolute;
     bottom: 80px;
     right: 0;
-    width: 350px;
-    height: 500px;
+    width: 360px;
+    height: 540px;
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
@@ -45,6 +45,37 @@
     animation: slideUp 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
     border: 1px solid #e2e8f0;
 }
+
+/* Suggestion chips */
+.chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 8px 14px 10px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+}
+
+.suggestion-chip {
+    background: white;
+    border: 1px solid #3b82f6;
+    color: #3b82f6;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.suggestion-chip:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.25);
+}
+
 
 .chat-header {
     background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
