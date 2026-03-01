@@ -1,9 +1,9 @@
-const fs = require("fs");
+// fs no longer needed — images are passed as in-memory buffers from multer memoryStorage
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-async function evaluateFromImage({ imagePath, question, exam, marks, answerText }) {
+async function evaluateFromImage({ imageBuffer, mimeType, question, exam, marks, answerText }) {
   const modelName = process.env.GEMINI_MODEL || "models/gemini-2.5-flash";
   console.log("Using Gemini Model:", modelName);
   const model = genAI.getGenerativeModel({ model: modelName });
@@ -174,19 +174,14 @@ Respond ONLY in valid JSON (no markdown wrapping, no text outside JSON):
   const parts = [];
 
 
-  if (imagePath) {
-    if (fs.existsSync(imagePath)) {
-      const imageBuffer = fs.readFileSync(imagePath);
-      parts.push({
-        inlineData: {
-          data: imageBuffer.toString("base64"),
-          mimeType: "image/png",
-        },
-      });
-      prompt += "\n\n(Evaluate the handwritten answer in the image above)";
-    } else {
-      console.warn(`Warning: Image file not found at ${imagePath}. Proceeding without image.`);
-    }
+  if (imageBuffer) {
+    parts.push({
+      inlineData: {
+        data: imageBuffer.toString("base64"),
+        mimeType: mimeType || "image/jpeg",
+      },
+    });
+    prompt += "\n\n(Evaluate the handwritten answer in the image above)";
   }
 
   if (answerText) {

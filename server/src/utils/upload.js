@@ -1,24 +1,20 @@
 const multer = require("multer");
-const path = require("path");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    const uniqueName =
-      Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueName + path.extname(file.originalname));
-  },
-});
+// Use memoryStorage so uploaded files are kept in RAM (req.file.buffer)
+// instead of being written to disk. This is required for serverless/cloud
+// deployments (Vercel, Render, etc.) where the local filesystem is ephemeral.
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
     if (!file.mimetype.startsWith("image/")) {
-      cb(new Error("Only images allowed"));
+      return cb(new Error("Only images allowed"));
     }
     cb(null, true);
+  },
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB max
   },
 });
 

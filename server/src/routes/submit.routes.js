@@ -72,7 +72,8 @@ router.post(
 
       // 🧠 Gemini Evaluation
       const evaluation = await evaluateFromImage({
-        imagePath: req.file ? req.file.path : null, // Handle optional file
+        imageBuffer: req.file ? req.file.buffer : null, // In-memory buffer from multer memoryStorage
+        mimeType: req.file ? req.file.mimetype : null,
         question,
         exam,
         marks: req.body.marks || 10,
@@ -90,7 +91,6 @@ router.post(
         userId: req.userId,
         exam,
         question,
-        imagePath: req.file ? req.file.path : null, // Handle optional file
         answerText, // Save text
         status: "evaluated",
         structureAnalysis: evaluation.structureAnalysis, // Save structure metadata
