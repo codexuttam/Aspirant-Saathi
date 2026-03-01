@@ -1,34 +1,58 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
+import { isLoggedIn } from '../utils/auth';
 import '../styles/FeedbackModal.css';
 
-export default function FeedbackModal({ isOpen, onClose }) {
+export default function FeedbackModal({ isOpen, onClose, onSuccess, requireLogin = false }) {
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [message, setMessage] = useState('');
+    const [examType, setExamType] = useState('');
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     if (!isOpen) return null;
 
     const handleSubmit = async () => {
+        // If requireLogin is set and user is not logged in, redirect to login
+        if (requireLogin && !isLoggedIn()) {
+            toast('Please login to submit your feedback', { icon: '🔐' });
+            onClose();
+            navigate('/login');
+            return;
+        }
+
         if (rating === 0) {
             toast.error('Please select a star rating');
+            return;
+        }
+        if (!message.trim()) {
+            toast.error('Please write a message');
             return;
         }
 
         setLoading(true);
         try {
-            await API.post('/feedback', { rating, message });
-            toast.success('Thanks for your feedback! Check your email.');
-            onClose();
-            // Reset
+            await API.post('/feedback', { rating, message, examType: examType || 'Aspirant' });
+            toast.success('Thanks for your feedback! 🎉');
+            // Reset state
             setRating(0);
             setHoverRating(0);
             setMessage('');
+            setExamType('');
+            if (onSuccess) onSuccess();
+            else onClose();
         } catch (error) {
             console.error(error);
-            toast.error('Failed to submit feedback');
+            if (error.response?.status === 401) {
+                toast.error('Please login to submit feedback');
+                onClose();
+                navigate('/login');
+            } else {
+                toast.error('Failed to submit feedback. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -44,14 +68,14 @@ export default function FeedbackModal({ isOpen, onClose }) {
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2v1"></path><path d="M12 7a5 5 0 0 0-5 5c0 2 1.5 3 2 5h6c.5-2 2-3 2-5a5 5 0 0 0-5-5Z"></path></svg>
                     </div>
                     <div>
-                        <h3>Help Us Improve</h3>
-                        <p>Your insights drive our platform forward</p>
+                        <h3>Share Your Experience</h3>
+                        <p>Your voice helps us & other aspirants</p>
                     </div>
                 </div>
 
                 <div className="feedback-body">
                     <p className="rating-label">
-                        <span className="sparkle">✨</span> How would you rate your learning experience?
+                        <span className="sparkle">✨</span> How would you rate Aspirant-Saathi?
                     </p>
 
                     <div className="star-rating">
@@ -74,22 +98,31 @@ export default function FeedbackModal({ isOpen, onClose }) {
                         ))}
                     </div>
 
+                    {/* Exam type */}
+                    <p className="input-label">Your exam category (optional)</p>
+                    <select
+                        className="feedback-select"
+                        value={examType}
+                        onChange={(e) => setExamType(e.target.value)}
+                        style={{ width: '100%', marginBottom: '16px', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontFamily: 'inherit', fontSize: '14px', background: 'white', color: '#334155', outline: 'none' }}
+                    >
+                        <option value="">Select category…</option>
+                        <option value="UPSC Aspirant">UPSC Aspirant</option>
+                        <option value="State PSC Aspirant">State PSC Aspirant</option>
+                        <option value="CAPF Candidate">CAPF Candidate</option>
+                        <option value="IB/ACIO Candidate">IB/ACIO Candidate</option>
+                        <option value="Other">Other</option>
+                    </select>
+
                     <p className="input-label">Share your thoughts</p>
                     <div className="textarea-wrapper">
                         <textarea
-                            placeholder="What can we do better? Any features you'd like to see..."
+                            placeholder="What do you love? What can we improve? Share your honest feedback..."
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            maxLength={1000}
+                            maxLength={500}
                         />
-                        <span className="char-count">{message.length}/1000</span>
-                    </div>
-
-                    <div className="contact-box">
-                        <p>Need immediate help?</p>
-                        <a href="mailto:aspirantsaathisuppport@gmail.com" className="email-us-btn">
-                            Mail us <span className="arrow">→</span>
-                        </a>
+                        <span className="char-count">{message.length}/500</span>
                     </div>
 
                     <button
@@ -100,7 +133,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
                         {loading ? "Submitting..." : "Submit Your Feedback"}
                     </button>
                     <p className="footer-note">
-                        Every piece of feedback helps us build a better learning experience for you
+                        Your review will be shown publicly on the feedbacks page
                     </p>
                 </div>
             </div>

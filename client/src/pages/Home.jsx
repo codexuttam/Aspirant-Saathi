@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "../styles/Home.css";
 import Navbar from "../components/Navbar";
+import FeedbackModal from "../components/FeedbackModal";
 import { isLoggedIn } from "../utils/auth";
 import { toast } from "react-hot-toast";
 
@@ -27,7 +29,31 @@ const MOTIVATIONAL_QUOTES = [
   { text: "“Ate that mock test and left absolutely no crumbs.”", author: "Hype Man", icon: "🍽️" }
 ];
 
+const STATIC_TESTIMONIALS = [
+  { _id: 's1', name: 'Rahul Sharma', rating: 5, message: 'This tool completely changed how I approach answer writing. The feedback is specific and actionable.', examType: 'UPSC Aspirant' },
+  { _id: 's2', name: 'Priya Singh', rating: 5, message: 'I used to struggle with structure. The AI breakdown helped me organize my thoughts much better.', examType: 'State PSC Topper' },
+  { _id: 's3', name: 'Arjun Mehta', rating: 5, message: 'Instant evaluation means I can practice more questions in less time. Highly recommended!', examType: 'CAPF Candidate' },
+];
+
+const AVATAR_GRADIENTS = ['gradient-1', 'gradient-2', 'gradient-3', 'gradient-4', 'gradient-5'];
+function getInitials(name = '') {
+  return name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?';
+}
+
 export default function Home() {
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/feedback?limit=3`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.feedbacks && data.feedbacks.length > 0) setFeedbacks(data.feedbacks);
+      })
+      .catch(() => { }); // silent fail — static fallback shown
+  }, []);
+
+  const displayedFeedbacks = feedbacks.length > 0 ? feedbacks.slice(0, 3) : STATIC_TESTIMONIALS;
+
   const handleEasterEggClick = () => {
     const randomQuote = MOTIVATIONAL_QUOTES[Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)];
 
@@ -335,43 +361,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* TESTIMONIALS — Dynamic */}
       <section className="testimonials-section">
         <h2 className="section-title">Why Aspirants Love Us</h2>
+        <p className="section-subtitle" style={{ marginTop: '-8px' }}>Real reviews from real aspirants</p>
         <div className="testimonials-grid">
-          <div className="testimonial-card">
-            <div className="stars">★★★★★</div>
-            <p>"This tool completely changed how I approach answer writing. The feedback is specific and actionable."</p>
-            <div className="user-info">
-              <div className="user-avatar gradient-1">R</div>
-              <div>
-                <h4>Rahul Sharma</h4>
-                <span>UPSC Aspirant</span>
+          {displayedFeedbacks.map((fb, idx) => (
+            <div className="testimonial-card" key={fb._id || idx}>
+              <div className="stars">
+                {'★'.repeat(fb.rating)}{'☆'.repeat(5 - fb.rating)}
+              </div>
+              <p>"{fb.message}"</p>
+              <div className="user-info">
+                <div className={`user-avatar ${AVATAR_GRADIENTS[idx % AVATAR_GRADIENTS.length]}`}>
+                  {getInitials(fb.name)}
+                </div>
+                <div>
+                  <h4>{fb.name}</h4>
+                  <span>{fb.examType || 'Aspirant'}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="testimonial-card">
-            <div className="stars">★★★★★</div>
-            <p>"I used to struggle with structure. The AI breakdown helped me organize my thoughts much better."</p>
-            <div className="user-info">
-              <div className="user-avatar gradient-2">P</div>
-              <div>
-                <h4>Priya Singh</h4>
-                <span>State PSC Topper</span>
-              </div>
-            </div>
-          </div>
-          <div className="testimonial-card">
-            <div className="stars">★★★★★</div>
-            <p>"Instant evaluation means I can practice more questions in less time. Highly recommended!"</p>
-            <div className="user-info">
-              <div className="user-avatar gradient-3">A</div>
-              <div>
-                <h4>Arjun Mehta</h4>
-                <span>CAPF Candidate</span>
-              </div>
-            </div>
-          </div>
+          ))}
+        </div>
+
+        {/* View More Feedbacks */}
+        <div style={{ textAlign: 'center', marginTop: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
+          <Link
+            to="/feedbacks"
+            className="view-more-feedbacks-btn"
+            id="view-more-feedbacks-btn"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 8l4 4-4 4" /><path d="M3 12h18" /></svg>
+            View All Feedbacks
+          </Link>
+          <button
+            className="write-your-feedback-btn"
+            onClick={() => setShowFeedbackModal(true)}
+            id="write-your-feedback-home-btn"
+          >
+            ✍️ Write Yours
+          </button>
         </div>
       </section>
 
@@ -429,6 +459,20 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      {/* FEEDBACK MODAL */}
+      <FeedbackModal
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        onSuccess={() => {
+          setShowFeedbackModal(false);
+          // Re-fetch to show new feedback
+          fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/feedback?limit=3`)
+            .then(r => r.json())
+            .then(data => { if (data.feedbacks?.length > 0) setFeedbacks(data.feedbacks); })
+            .catch(() => { });
+        }}
+        requireLogin={true}
+      />
     </div>
   );
 }

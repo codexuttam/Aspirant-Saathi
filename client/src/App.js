@@ -24,6 +24,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import ChatBot from "./components/ChatBot";
 import BatchStudio from "./pages/BatchStudio";
 import PremiumDetails from "./pages/PremiumDetails";
+import Feedbacks from "./pages/Feedbacks";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/feedbacks" element={<Feedbacks />} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/verify-otp" element={<PublicRoute><VerifyOtp /></PublicRoute>} />
