@@ -37,15 +37,15 @@
 }
 
 .submit-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding: 40px;
-    border-radius: 20px;
+    border-radius: 24px;
     box-shadow:
-        0 4px 6px -1px rgba(0, 0, 0, 0.05),
-        0 20px 40px -6px rgba(0, 0, 0, 0.08),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+        0 10px 15px -3px rgba(0, 0, 0, 0.04),
+        0 20px 45px -12px rgba(0, 0, 0, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
@@ -216,6 +216,7 @@
         transform: translateY(0);
     }
 }
+
 /* Popup Styles */
 .popup-overlay {
     position: fixed;
@@ -234,17 +235,37 @@
 }
 
 .popup-content {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 32px;
-    border-radius: 24px;
-    box-shadow: 
-        0 20px 25px -5px rgba(0, 0, 0, 0.1), 
-        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    padding: 40px;
+    border-radius: 32px;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.4);
     text-align: center;
-    max-width: 400px;
+    max-width: 440px;
     width: 90%;
-    animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    animation: scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.popup-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.popup-error {
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.15);
 }
 
 .popup-icon {
@@ -268,41 +289,66 @@
 }
 
 .popup-btn {
-    background: var(--accent-color);
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
     color: white;
     border: none;
-    padding: 12px 32px;
-    border-radius: 12px;
-    font-weight: 600;
+    padding: 14px 40px;
+    border-radius: 14px;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 1rem;
-    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
 }
 
 .popup-btn:hover {
-    background: #2563eb;
     transform: translateY(-2px);
-    box-shadow: 0 8px 12px -1px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 15px 25px -5px rgba(79, 70, 229, 0.4);
+    filter: brightness(1.1);
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    box-shadow: none;
+    margin-right: 12px;
+}
+
+.btn-error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.3);
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes scaleUp {
-    from { 
+    from {
         opacity: 0;
         transform: scale(0.9) translateY(10px);
     }
-    to { 
+
+    to {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }

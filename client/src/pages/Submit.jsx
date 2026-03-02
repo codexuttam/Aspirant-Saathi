@@ -26,6 +26,8 @@ export default function Submit() {
     const [marks, setMarks] = useState(10);
     const [showPopup, setShowPopup] = useState(false);
     const [showTokenConfirm, setShowTokenConfirm] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [question, setQuestion] = useState("");
     const [answer, setAnswer] = useState("");
     const [file, setFile] = useState(null);
@@ -142,7 +144,7 @@ export default function Submit() {
             setFile(null);
         } catch (err) {
             if (err.response && err.response.status === 402) {
-                alert("Insufficient tokens! Redirecting to pricing...");
+                toast.error("Insufficient tokens! Redirecting to pricing...", { duration: 4000 });
                 navigate("/pricing");
             } else if (err.response && err.response.status === 400 && err.response.data.error === "Irrelevant question") {
                 setIrrelevantMessage(err.response.data.message);
@@ -158,7 +160,8 @@ export default function Submit() {
                     }
                 }
             } else {
-                alert("Submission failed: " + (err.response?.data?.error || err.message));
+                setErrorMessage(err.response?.data?.error || err.message);
+                setShowError(true);
                 console.error(err);
             }
         } finally {
@@ -340,6 +343,26 @@ export default function Submit() {
 
                         <button className="popup-btn" style={{ background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)', boxShadow: '0 4px 12px rgba(225, 29, 72, 0.3)' }} onClick={() => setShowIrrelevantPopup(false)}>
                             Got it, I'll be serious! ✨
+                        </button>
+                    </div>
+                </div>
+            )}
+            {showError && (
+                <div className="popup-overlay" onClick={() => setShowError(false)}>
+                    <div className="popup-content popup-error" onClick={(e) => e.stopPropagation()}>
+                        <div className="popup-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', color: '#ef4444' }}>
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3 className="popup-title">Evaluation Failed</h3>
+                        <p className="popup-text" style={{ fontSize: '14px' }}>
+                            {errorMessage || "An unexpected error occurred while evaluating your answer. Please try again."}
+                        </p>
+                        <button className="popup-btn btn-error" onClick={() => setShowError(false)}>
+                            Try Again
                         </button>
                     </div>
                 </div>

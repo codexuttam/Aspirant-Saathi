@@ -4,6 +4,8 @@ import { getUser } from "../utils/auth";
 import "../styles/BatchStudio.css";
 import InternalLayout from "../components/InternalLayout";
 import ExamSelector from "../components/ExamSelector";
+import QuestionInput from "../components/QuestionInput";
+import { toast } from "react-hot-toast";
 
 export default function BatchStudio() {
     const navigate = useNavigate();
@@ -12,12 +14,15 @@ export default function BatchStudio() {
 
     const [files, setFiles] = useState([]);
     const [exam, setExam] = useState("UPSC CSE (Mains) - GS");
+    const [question, setQuestion] = useState("");
     const [evaluating, setEvaluating] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleFileSelect = (e) => {
         const selectedFiles = Array.from(e.target.files);
         if (selectedFiles.length + files.length > 10) {
-            alert("Batch Studio allows a maximum of 10 pages per evaluation ticket.");
+            toast.error("Batch Studio allows a maximum of 10 pages per evaluation ticket.");
             return;
         }
 
@@ -36,13 +41,26 @@ export default function BatchStudio() {
     };
 
     const handleStartBatch = () => {
-        if (files.length === 0) return;
+        if (files.length === 0) {
+            toast.error("Please upload at least one image.");
+            return;
+        }
+        if (!question.trim()) {
+            toast.error("Please enter the question for this batch.");
+            return;
+        }
 
         setEvaluating(true);
-        // Simulate processing for testing UI
+        // Simulate processing for testing UI - In future this will call a special batch API
         setTimeout(() => {
             setEvaluating(false);
-            alert(`Batch evaluation simulated for ${files.length} pages! Redirecting to report...`);
+            toast.success(`Batch evaluation completed for ${files.length} pages! ✨`, {
+                icon: '🚀',
+                duration: 5000
+            });
+            // Reset for next batch
+            setFiles([]);
+            setQuestion("");
         }, 3000);
     };
 
@@ -61,6 +79,10 @@ export default function BatchStudio() {
                         <div style={{ width: "250px" }}>
                             <ExamSelector exam={exam} setExam={setExam} />
                         </div>
+                    </div>
+
+                    <div style={{ marginBottom: "24px" }}>
+                        <QuestionInput question={question} setQuestion={setQuestion} />
                     </div>
 
                     <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "16px", padding: "32px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)" }}>
@@ -246,6 +268,26 @@ export default function BatchStudio() {
                     </div>
                 </div>
             </div>
+            {showError && (
+                <div className="popup-overlay" onClick={() => setShowError(false)}>
+                    <div className="popup-content popup-error" onClick={(e) => e.stopPropagation()}>
+                        <div className="popup-icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', color: '#ef4444' }}>
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3 className="popup-title">Batch Evaluation Failed</h3>
+                        <p className="popup-text" style={{ fontSize: '14px' }}>
+                            {errorMessage || "An unexpected error occurred during batch processing. Please try again."}
+                        </p>
+                        <button className="popup-btn btn-error" onClick={() => setShowError(false)}>
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            )}
         </InternalLayout>
     );
 }

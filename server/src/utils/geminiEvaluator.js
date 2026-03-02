@@ -4,7 +4,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function evaluateFromImage({ imageBuffer, mimeType, question, exam, marks, answerText }) {
-  const modelName = process.env.GEMINI_MODEL || "models/gemini-1.5-flash";
+  const modelName = "models/gemini-1.5-flash";
   console.log("Using Gemini Model:", modelName);
   const model = genAI.getGenerativeModel({ model: modelName });
 
@@ -229,21 +229,29 @@ Respond ONLY in valid JSON (no markdown wrapping, no text outside JSON):
   }
 
   const rawText = result.response.text();
-  // Robust JSON extraction: look for the first '{' and last '}'
-  const startIdx = rawText.indexOf("{");
-  const endIdx = rawText.lastIndexOf("}");
+  console.log("Raw Response from Gemini:", rawText);
 
-  if (startIdx === -1 || endIdx === -1) {
-    console.error("Gemini did not return valid JSON:", rawText);
-    throw new Error("Gemini returned an invalid response format.");
+  // Very robust JSON extraction using regex to capture everything from the first '{' to the last '}'
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+
+  if (!jsonMatch) {
+    console.error("Gemini did not return any JSON object:", rawText);
+    throw new Error("Gemini returned an invalid response format (No JSON found).");
   }
 
-  const cleaned = rawText.substring(startIdx, endIdx + 1);
-  return JSON.parse(cleaned);
+  const cleaned = jsonMatch[0];
+  try {
+    return JSON.parse(cleaned);
+  } catch (err) {
+    console.error("Failed to parse extracted JSON:", cleaned);
+    // If it fails, maybe try to strip out those pesky markdown blocks again manually
+    const furtherCleaned = cleaned.replace(/```json|```/g, "").trim();
+    return JSON.parse(furtherCleaned);
+  }
 }
 
 async function checkQuestionRelevance(question) {
-  const modelName = process.env.GEMINI_MODEL || "models/gemini-1.5-flash";
+  const modelName = "models/gemini-1.5-flash";
   const model = genAI.getGenerativeModel({ model: modelName });
 
   const prompt = `
@@ -275,11 +283,9 @@ Determine relevance for:
   try {
     const result = await model.generateContent(prompt);
     const rawText = result.response.text();
-    const startIdx = rawText.indexOf("{");
-    const endIdx = rawText.lastIndexOf("}");
-    const cleaned = (startIdx !== -1 && endIdx !== -1)
-      ? rawText.substring(startIdx, endIdx + 1)
-      : rawText.replace(/```json|```/g, "").trim();
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found in relevance check");
+    const cleaned = jsonMatch[0].replace(/```json|```/g, "").trim();
 
     const parsed = JSON.parse(cleaned);
     return parsed.isRelevant === true;
