@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getUser } from "../utils/auth";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
 import ScoreCard from "../components/ScoreCard";

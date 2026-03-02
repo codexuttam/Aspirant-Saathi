@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import toast, { ToastBar } from "react-hot-toast";
+import toast from "react-hot-toast";
 import API from "../services/api";
 import "../styles/Auth.css";
 
