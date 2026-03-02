@@ -3,11 +3,12 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { toast } from "react-hot-toast";
-import { isLoggedIn } from "../utils/auth";
+import { isLoggedIn, getUser } from "../utils/auth";
 import "../styles/Pricing.css";
 
 const Pricing = () => {
     const navigate = useNavigate();
+    const user = getUser();
     // Dynamically load Razorpay script
     useEffect(() => {
         const script = document.createElement("script");
@@ -169,9 +170,13 @@ const Pricing = () => {
                             </div>
                         </div>
 
-                        <button className="plan-btn solid" onClick={handlePayment}>
-                            Upgrade to Pro 🚀
-                        </button>
+                        {user?.isPro ? (
+                            <button className="plan-btn outline" disabled>Active Plan</button>
+                        ) : (
+                            <button className="plan-btn solid" onClick={handlePayment}>
+                                Upgrade to Pro 🚀
+                            </button>
+                        )}
                     </div>
                 </div>
 

@@ -21,6 +21,7 @@ const SUBMISSION_QUOTES = [
 
 export default function Submit() {
     const navigate = useNavigate();
+    const user = getUser();
     const [exam, setExam] = useState("UPSC CSE (Mains) - GS");
     const [marks, setMarks] = useState(10);
     const [showPopup, setShowPopup] = useState(false);
@@ -291,15 +292,24 @@ export default function Submit() {
                         </div>
                         <h3 className="popup-title" style={{ color: '#1e293b' }}>Confirm Usage</h3>
                         <p className="popup-text" style={{ fontSize: '1.05rem', margin: '16px 0 24px 0', color: '#475569' }}>
-                            Ready to evaluate? This action will use <br />
-                            <strong style={{ fontSize: '1.4rem', color: '#4f46e5', display: 'inline-block', marginTop: '8px' }}>{file ? 20 : 5} Tokens</strong>
+                            {user?.isPro ? (
+                                <>
+                                    Ready to evaluate? Your <strong>Pro Plan</strong> includes <br />
+                                    <strong style={{ fontSize: '1.4rem', color: '#4f46e5', display: 'inline-block', marginTop: '8px' }}>Unlimited Evaluations</strong>
+                                </>
+                            ) : (
+                                <>
+                                    Ready to evaluate? This action will use <br />
+                                    <strong style={{ fontSize: '1.4rem', color: '#4f46e5', display: 'inline-block', marginTop: '8px' }}>{file ? 20 : 5} Tokens</strong>
+                                </>
+                            )}
                         </p>
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between' }}>
                             <button className="popup-btn" style={{ background: '#f1f5f9', color: '#475569', flex: 1, boxShadow: 'none' }} onClick={() => setShowTokenConfirm(false)}>
                                 Cancel
                             </button>
                             <button className="popup-btn" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #9333ea 100%)', flex: 1.5, boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)' }} onClick={processSubmit}>
-                                Deduct Tokens
+                                {user?.isPro ? "Evaluate Now" : "Deduct Tokens"}
                             </button>
                         </div>
                     </div>
@@ -316,15 +326,17 @@ export default function Submit() {
                             {irrelevantMessage}
                         </p>
 
-                        <div style={{ background: 'rgba(244, 63, 94, 0.1)', border: '1px dashed #f43f5e', borderRadius: '12px', padding: '16px', marginBottom: '24px', textAlign: 'center' }}>
-                            <span style={{ fontSize: '1.4rem', fontWeight: '800', color: '#e11d48', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="2" y1="12" x2="4" y2="12"></line></svg>
-                                -10 Tokens Penalized
-                            </span>
-                            <span style={{ display: 'block', fontSize: '0.85rem', color: '#9f1239', marginTop: '6px', fontWeight: '600' }}>
-                                Warning: Keep questions relevant to the exam!
-                            </span>
-                        </div>
+                        {!user?.isPro && (
+                            <div style={{ background: 'rgba(244, 63, 94, 0.1)', border: '1px dashed #f43f5e', borderRadius: '12px', padding: '16px', marginBottom: '24px', textAlign: 'center' }}>
+                                <span style={{ fontSize: '1.4rem', fontWeight: '800', color: '#e11d48', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="2" y1="12" x2="4" y2="12"></line></svg>
+                                    -10 Tokens Penalized
+                                </span>
+                                <span style={{ display: 'block', fontSize: '0.85rem', color: '#9f1239', marginTop: '6px', fontWeight: '600' }}>
+                                    Warning: Keep questions relevant to the exam!
+                                </span>
+                            </div>
+                        )}
 
                         <button className="popup-btn" style={{ background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)', boxShadow: '0 4px 12px rgba(225, 29, 72, 0.3)' }} onClick={() => setShowIrrelevantPopup(false)}>
                             Got it, I'll be serious! ✨

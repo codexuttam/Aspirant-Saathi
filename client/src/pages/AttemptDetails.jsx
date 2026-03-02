@@ -43,6 +43,7 @@ const PremiumLoader = () => (
 
 export default function AttemptDetails() {
   const { id } = useParams();
+  const [user] = useState(getUser());
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [confirmExam, setConfirmExam] = useState(null);
@@ -168,7 +169,11 @@ export default function AttemptDetails() {
             <h3>Re-evaluate Answer?</h3>
             <p>
               Are you sure you want to re-evaluate this answer for <strong>{confirmExam}</strong>?
-              This will consume a token and <strong>overwrite</strong> your current marks and feedback permanently.
+              {user?.isPro ? (
+                <span> This will <strong>overwrite</strong> your current marks and feedback permanently.</span>
+              ) : (
+                <span> This will consume a token and <strong>overwrite</strong> your current marks and feedback permanently.</span>
+              )}
             </p>
             <div className="modal-actions">
               <button className="modal-btn cancel" onClick={() => setConfirmExam(null)}>Cancel</button>

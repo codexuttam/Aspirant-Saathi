@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import toast from "react-hot-toast";
+import toast, { ToastBar } from "react-hot-toast";
 import API from "../services/api";
 import "../styles/Auth.css";
 
@@ -60,7 +60,7 @@ export default function Login() {
         setEmailStatus('valid');
       } else {
         setEmailStatus('error');
-        toast.error("Email not found. Please register.");
+        showCoolError("Wait, you're not in the database yet!", "Account not found. Slide into our community by creating an account first! ✨", "/register", "Join the Club 🚀");
       }
     } catch (err) {
       console.error(err);
@@ -96,10 +96,79 @@ export default function Login() {
       }
 
     } catch (err) {
-      toast.error(err.response?.data?.error || "Login failed");
+      const errorMsg = err.response?.data?.error || "";
+      if (errorMsg.includes("Account not found") || errorMsg.includes("register first") || errorMsg.includes("sign up")) {
+        showCoolError("Whoops! New around here?", "We couldn't find your account. Let's get you set up with a fresh account! 🌟", "/register", "Sign Up Now");
+      } else {
+        toast.error(errorMsg || "Login failed");
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const showCoolError = (title, message, link, linkText) => {
+    toast.custom((t) => (
+      <div
+        className={`${t.visible ? 'animate-enter' : 'animate-leave'}`}
+        style={{
+          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99))',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(244, 63, 94, 0.3)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          borderRadius: '20px',
+          padding: '24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          maxWidth: '400px',
+          color: '#fff',
+          fontFamily: "'Outfit', 'Inter', sans-serif",
+          transform: t.visible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
+          transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        }}
+      >
+        <div style={{ fontSize: '48px', marginBottom: '16px' }}>👀</div>
+        <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: '#fca5a5' }}>{title}</h3>
+        <p style={{ fontSize: '15px', color: '#cbd5e1', lineHeight: '1.5', marginBottom: '20px' }}>
+          {message}
+        </p>
+        <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            style={{
+              flex: 1,
+              padding: '12px',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.05)',
+              color: '#94a3b8',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Close
+          </button>
+          <Link
+            to={link}
+            onClick={() => toast.dismiss(t.id)}
+            style={{
+              flex: 2,
+              padding: '12px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)',
+              color: 'white',
+              fontWeight: '700',
+              textDecoration: 'none',
+              boxShadow: '0 4px 12px rgba(225, 29, 72, 0.3)'
+            }}
+          >
+            {linkText}
+          </Link>
+        </div>
+      </div>
+    ), { duration: 6000, position: 'top-center' });
   };
 
   return (
