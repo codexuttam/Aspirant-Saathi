@@ -4,7 +4,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function evaluateFromImage({ imageBuffer, mimeType, question, exam, marks, answerText }) {
-  const modelName = "models/gemini-1.5-flash";
+  const modelName = process.env.GEMINI_MODEL || "models/gemini-2.5-flash";
   console.log("Using Gemini Model:", modelName);
   const model = genAI.getGenerativeModel({ model: modelName });
 
@@ -251,7 +251,7 @@ Respond ONLY in valid JSON (no markdown wrapping, no text outside JSON):
 }
 
 async function checkQuestionRelevance(question) {
-  const modelName = "models/gemini-1.5-flash";
+  const modelName = process.env.GEMINI_MODEL || "models/gemini-2.5-flash";
   const model = genAI.getGenerativeModel({ model: modelName });
 
   const prompt = `
