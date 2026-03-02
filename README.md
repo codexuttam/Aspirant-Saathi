@@ -22,7 +22,7 @@ This repository is organized as a monorepo containing two main parts:
 ### Backend
 - **Framework:** Node.js, Express.js
 - **Database:** MongoDB (using Mongoose)
-- **AI Integration:** Google Generative AI (Gemini 2.5 Flash)
+- **AI Integration:** Google Generative AI (Gemini 1.5 Flash)
 - **Authentication:** JWT (JSON Web Tokens), bcryptjs
 - **Email Service:** Nodemailer (SMTP based OTPs & Notifications)
 - **Image Upload:** Multer
@@ -67,7 +67,7 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/dbname
 
 # AI and Auth
 GEMINI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=models/gemini-2.5-flash
+GEMINI_MODEL=models/gemini-1.5-flash
 JWT_SECRET=super_secret_jwt_key
 GOOGLE_CLIENT_ID=your_google_oauth_client_id
 

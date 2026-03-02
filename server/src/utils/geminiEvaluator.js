@@ -4,7 +4,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function evaluateFromImage({ imageBuffer, mimeType, question, exam, marks, answerText }) {
-  const modelName = process.env.GEMINI_MODEL || "models/gemini-2.5-flash";
+  const modelName = process.env.GEMINI_MODEL || "models/gemini-1.5-flash";
   console.log("Using Gemini Model:", modelName);
   const model = genAI.getGenerativeModel({ model: modelName });
 
@@ -229,12 +229,21 @@ Respond ONLY in valid JSON (no markdown wrapping, no text outside JSON):
   }
 
   const rawText = result.response.text();
-  const cleaned = rawText.replace(/```json | ```/g, "").trim();
+  // Robust JSON extraction: look for the first '{' and last '}'
+  const startIdx = rawText.indexOf("{");
+  const endIdx = rawText.lastIndexOf("}");
+
+  if (startIdx === -1 || endIdx === -1) {
+    console.error("Gemini did not return valid JSON:", rawText);
+    throw new Error("Gemini returned an invalid response format.");
+  }
+
+  const cleaned = rawText.substring(startIdx, endIdx + 1);
   return JSON.parse(cleaned);
 }
 
 async function checkQuestionRelevance(question) {
-  const modelName = process.env.GEMINI_MODEL || "models/gemini-2.5-flash";
+  const modelName = process.env.GEMINI_MODEL || "models/gemini-1.5-flash";
   const model = genAI.getGenerativeModel({ model: modelName });
 
   const prompt = `
@@ -266,7 +275,12 @@ Determine relevance for:
   try {
     const result = await model.generateContent(prompt);
     const rawText = result.response.text();
-    const cleaned = rawText.replace(/```json | ```/g, "").trim();
+    const startIdx = rawText.indexOf("{");
+    const endIdx = rawText.lastIndexOf("}");
+    const cleaned = (startIdx !== -1 && endIdx !== -1)
+      ? rawText.substring(startIdx, endIdx + 1)
+      : rawText.replace(/```json|```/g, "").trim();
+
     const parsed = JSON.parse(cleaned);
     return parsed.isRelevant === true;
   } catch (err) {
