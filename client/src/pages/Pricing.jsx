@@ -140,8 +140,12 @@ const Pricing = () => {
                         {user?.isPro ? (
                             <button className="plan-btn outline" disabled>Active Plan ✓</button>
                         ) : (
-                            <button className="plan-btn solid" onClick={handlePayment}>
-                                Upgrade to Pro 🚀
+                            <button
+                                className="plan-btn solid"
+                                onClick={handlePayment}
+                                disabled={loading}
+                            >
+                                {loading ? "Preparing Checkout..." : "Upgrade to Pro 🚀"}
                             </button>
                         )}
                     </div>
