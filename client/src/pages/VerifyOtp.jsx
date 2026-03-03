@@ -100,7 +100,7 @@ export default function VerifyOtp() {
         }
     };
 
-    const [timer, setTimer] = useState(40);
+    const [timer, setTimer] = useState(30);
     const [canResend, setCanResend] = useState(false);
 
     useEffect(() => {
@@ -125,7 +125,7 @@ export default function VerifyOtp() {
             } else {
                 await API.post("/auth/resend-otp", { email });
             }
-            setTimer(40);
+            setTimer(30);
             setCanResend(false);
             toast.success(`Code resent to your ${phoneNumber ? 'phone' : 'email'}!`);
         } catch (err) {

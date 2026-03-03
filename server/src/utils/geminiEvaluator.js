@@ -137,6 +137,7 @@ ABSOLUTE PROHIBITIONS — NEVER DO THESE:
 - DO NOT write a placeholder — produce the real, complete, full content
 
 MANDATORY CONTENT REQUIREMENTS:
+- CRITICAL EXCEPTION: If the uploaded image or text does NOT contain any valid handwritten or typed answer to the question (e.g. blank page, unrelated photo, or pure gibberish), you MUST skip all other instructions. Set "strengths", "weaknesses", and "suggestions" to contain EXACTLY ONE item: "the uploaded image does not conatin any valid answer". Also set "improvedAnswer" to: "the uploaded image does not conatin any valid answer", and totalMarks to 0.
 - Include SPECIFIC examples: scheme names with years, specific data/statistics, Supreme Court case names with years, committee names
 - Each body paragraph must have: topic sentence + 2-4 supporting sentences with evidence + linking sentence to next para
 - Transitions between sections must be smooth and natural

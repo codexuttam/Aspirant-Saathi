@@ -50,7 +50,7 @@ router.post("/register", async (req, res) => {
 
   // Generate OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+  const otpExpires = new Date(Date.now() + 30 * 1000); // 30 secs
 
   // Create User (Unverified)
   const user = await User.create({
@@ -97,7 +97,7 @@ router.post("/login", async (req, res) => {
 
   // Generate OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+  const otpExpires = new Date(Date.now() + 30 * 1000); // 30 secs
 
   // Store OTP
   user.otp = otp;
@@ -127,8 +127,11 @@ router.post("/verify-otp", async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) return res.status(400).json({ error: "User not found" });
 
-  if (user.otp !== otp || user.otpExpires < Date.now()) {
-    return res.status(400).json({ error: "Invalid or expired OTP" });
+  if (user.otp !== otp) {
+    return res.status(400).json({ error: "Invalid OTP" });
+  }
+  if (user.otpExpires < Date.now()) {
+    return res.status(400).json({ error: "otp expired re enter the new otp" });
   }
 
   const isFirstTime = !user.isVerified;
@@ -182,7 +185,7 @@ router.post("/resend-otp", async (req, res) => {
 
     // Generate new OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+    const otpExpires = new Date(Date.now() + 30 * 1000); // 30 secs
 
     user.otp = otp;
     user.otpExpires = otpExpires;
@@ -399,7 +402,7 @@ router.post("/send-otp-phone", async (req, res) => {
     let user = await User.findOne({ phoneNumber });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+    const otpExpires = new Date(Date.now() + 30 * 1000); // 30 secs
 
     if (!user) {
       // Create new user (Signup flow implicitly)
@@ -420,7 +423,7 @@ router.post("/send-otp-phone", async (req, res) => {
     if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
       const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
       await twilioClient.messages.create({
-        body: `Your Aspirant-Saathi OTP is: ${otp}. Valid for 10 mins.`,
+        body: `Your Aspirant-Saathi OTP is: ${otp}. Valid for 30 secs.`,
         from: process.env.TWILIO_PHONE_NUMBER,
         to: phoneNumber,
       });
@@ -451,8 +454,11 @@ router.post("/verify-otp-phone", async (req, res) => {
     const user = await User.findOne({ phoneNumber });
     if (!user) return res.status(400).json({ error: "User not found" });
 
-    if (user.otp !== otp || user.otpExpires < Date.now()) {
-      return res.status(400).json({ error: "Invalid or expired OTP" });
+    if (user.otp !== otp) {
+      return res.status(400).json({ error: "Invalid OTP" });
+    }
+    if (user.otpExpires < Date.now()) {
+      return res.status(400).json({ error: "otp expired re enter the new otp" });
     }
 
     user.otp = undefined;

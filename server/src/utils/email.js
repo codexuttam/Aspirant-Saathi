@@ -23,6 +23,9 @@ const transporter = nodemailer.createTransport({
 const FROM_EMAIL = process.env.EMAIL_FROM || process.env.MAIL_FROM || 'aspirantsaathisuppport@gmail.com';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || FROM_EMAIL;
 
+const CLIENT_URL = process.env.CLIENT_URL || (process.env.NODE_ENV === 'production' ? 'https://aspirantsaathi.com' : 'http://localhost:3000');
+
+
 // HTML Template for OTP
 const otpTemplate = (otp, action) => {
   const isLogin = action === 'login';
@@ -61,11 +64,11 @@ const otpTemplate = (otp, action) => {
     </div>
 
     <p style="color: #64748b; font-size: 14px; text-align: left; background-color: #f8fafc; padding: 15px; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0;">
-      <strong style="color: #475569;">Security Notice:</strong> This OTP is valid for exactly 10 minutes. Never share this code with anyone. Our team will never ask for your OTP.
+      <strong style="color: #475569;">Security Notice:</strong> This OTP is valid for exactly 30 seconds. Never share this code with anyone. Our team will never ask for your OTP.
     </p>
     
     <div style="margin-top: 30px; text-align: center;">
-      <a href="https://aspirantsaathi.com" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 50px; font-weight: 600; font-size: 15px; transition: background-color 0.3s;">Visit Dashboard</a>
+      <a href="${CLIENT_URL}" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 50px; font-weight: 600; font-size: 15px; transition: background-color 0.3s;">Visit Dashboard</a>
     </div>
   </div>
 
@@ -173,7 +176,7 @@ exports.sendContactEmail = async (name, email, subject, message) => {
             
             <!-- CTA -->
             <div style="margin-top: 35px; text-align: center;">
-              <a href="https://aspirantsaathi.com" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); transition: transform 0.2s;">Return to Website</a>
+              <a href="${CLIENT_URL}" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); transition: transform 0.2s;">Return to Website</a>
             </div>
           </div>
 
@@ -253,7 +256,7 @@ exports.sendWelcomeEmail = async (name, email, isLogin = false) => {
           
           <!-- CTA -->
           <div style="text-align: center; margin: 35px 0 10px;">
-            <a href="https://aspirantsaathi.com/submit" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); text-transform: uppercase; letter-spacing: 1px;">
+            <a href="${CLIENT_URL}/submit" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); text-transform: uppercase; letter-spacing: 1px;">
               WRITE YOUR FIRST ANSWER
             </a>
           </div>
@@ -361,7 +364,7 @@ exports.sendFeedbackEmail = async (name, email, rating, message) => {
             </div>
             
             <div style="margin-top: 35px; text-align: center;">
-              <a href="https://aspirantsaathi.com/dashboard" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); transition: transform 0.2s;">Back to Dashboard</a>
+              <a href="${CLIENT_URL}/dashboard" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); transition: transform 0.2s;">Back to Dashboard</a>
             </div>
           </div>
 
@@ -427,7 +430,7 @@ exports.sendProUpgradeEmail = async (name, email) => {
           
           <!-- CTA -->
           <div style="text-align: center; margin: 35px 0 20px;">
-            <a href="https://aspirantsaathi.com/premium-details" style="display: inline-block; background: linear-gradient(135deg, #eab308 0%, #b45309 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); text-transform: uppercase;">
+            <a href="${CLIENT_URL}/premium-details" style="display: inline-block; background: linear-gradient(135deg, #eab308 0%, #b45309 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); text-transform: uppercase;">
               View Your Pro Dashboard
             </a>
           </div>
@@ -436,7 +439,7 @@ exports.sendProUpgradeEmail = async (name, email) => {
         <!-- Footer -->
         <div style="background-color: #f8fafc; padding: 25px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
           <p style="margin: 0;">Aspirant-Saathi 👑</p>
-          <p style="margin: 5px 0 0 0;">Issues with your subscription? <a href="https://aspirantsaathi.com/refund-policy" style="color: #3b82f6; text-decoration: none;">View our Refund Policy</a></p>
+          <p style="margin: 5px 0 0 0;">Issues with your subscription? <a href="${CLIENT_URL}/refund-policy" style="color: #3b82f6; text-decoration: none;">View our Refund Policy</a></p>
         </div>
       </div>
     `,
