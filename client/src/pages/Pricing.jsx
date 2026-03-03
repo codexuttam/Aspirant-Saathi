@@ -1,27 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import API from "../services/api";
-import { toast } from "react-hot-toast";
 import { isLoggedIn, getUser } from "../utils/auth";
+import { toast } from "react-hot-toast";
+import API from "../services/api";
 import "../styles/Pricing.css";
 
 const Pricing = () => {
     const navigate = useNavigate();
     const user = getUser();
-    // Dynamically load Razorpay script
-    useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
-        script.async = true;
-        document.body.appendChild(script);
-
-        return () => {
-            if (document.body.contains(script)) {
-                document.body.removeChild(script);
-            }
-        };
-    }, []);
+    const [loading, setLoading] = useState(false);
 
     const handlePayment = async () => {
         if (!isLoggedIn()) {
@@ -30,65 +18,76 @@ const Pricing = () => {
             return;
         }
 
-        const loadingToast = toast.loading("Initializing payment gateway...");
+        setLoading(true);
+        const toastId = toast.loading("Preparing secure checkout...");
+
         try {
-            // Get Razorpay key (optional, we could also use env var)
-            const { data: config } = await API.get('/payment/config');
+            // 1. Create order on backend
+            const { data: order } = await API.post("/payment/create-order");
 
-            // Create Order
-            const { data: order } = await API.post('/payment/create-order');
-
-
+            // 2. Fetch Razorpay config (key)
+            const { data: config } = await API.get("/payment/config");
 
             const options = {
                 key: config.key,
                 amount: order.amount,
-                currency: "INR",
-                name: "Aspirant-Saathi Pro",
-                description: "Upgrade to Pro Aspirant",
+                currency: order.currency,
+                name: "Aspirant-Saathi",
+                description: "Pro Aspirant Monthly Plan",
                 order_id: order.id,
-                theme: {
-                    color: "#3b82f6",
-                },
-                handler: async function (response) {
+                handler: async (response) => {
+                    const vToastId = toast.loading("Verifying payment...");
                     try {
-                        toast.loading("Verifying payment...", { id: loadingToast });
-                        const { data } = await API.post('/payment/verify', response);
+                        const verifyRes = await API.post("/payment/verify", {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                        });
 
-                        if (data.isPro) {
-                            toast.success("Payment Successful! You are now a Pro Aspirant 🎉", { id: loadingToast });
-                            // Update user object in local storage so the UI updates immediately
-                            const currentUser = JSON.parse(localStorage.getItem('user')) || {};
-                            currentUser.isPro = true;
-                            currentUser.tokens = 99999;
-                            localStorage.setItem('user', JSON.stringify(currentUser));
+                        if (verifyRes.data.isPro) {
+                            // Update local user state
+                            const updatedUser = { ...user, isPro: true, tokens: 99999 };
+                            localStorage.setItem("user", JSON.stringify(updatedUser));
 
-                            setTimeout(() => window.location.href = "/dashboard", 1500);
+                            toast.success("Welcome to Pro! Your account is now upgraded. 🎖️", { id: vToastId });
+                            setTimeout(() => navigate("/premium-details"), 2000);
                         }
-                    } catch (error) {
-                        console.error("Verification error:", error);
-                        toast.error("Payment verification failed. Contact support.", { id: loadingToast });
+                    } catch (err) {
+                        console.error("Verification failed:", err);
+                        toast.error("Payment verification failed. Please contact support.", { id: vToastId });
                     }
                 },
                 prefill: {
-                    name: "Aspirant User",
+                    name: user?.name || "",
+                    email: user?.email || "",
+                    contact: user?.phoneNumber || "",
+                },
+                theme: {
+                    color: "#7c3aed",
+                },
+                modal: {
+                    ondismiss: function () {
+                        setLoading(false);
+                    }
                 }
             };
 
             const rzp = new window.Razorpay(options);
             rzp.on('payment.failed', function (response) {
-                toast.error("Payment failed or cancelled.", { id: loadingToast });
+                toast.error("Payment failed: " + response.error.description);
             });
 
-            toast.dismiss(loadingToast);
             rzp.open();
-
+            toast.dismiss(toastId); // 🚀 Remove "Preparing..." toast as modal opens
         } catch (error) {
-            console.error("Payment initialization failed", error);
-            const errorMsg = error.response?.data?.error || "Failed to initialize payment gateway.";
-            toast.error(errorMsg, { id: loadingToast, duration: 5000 });
+            console.error("Payment Error:", error);
+            toast.dismiss(toastId);
+            toast.error(error.response?.data?.error || "Failed to initialize payment.");
+        } finally {
+            setLoading(false);
         }
     };
+
     return (
         <div className="pricing-wrapper">
             <Navbar />
@@ -96,9 +95,7 @@ const Pricing = () => {
             <div className="pricing-container">
                 <header className="pricing-header">
                     <h1 className="pricing-title">Simple, Transparent Pricing</h1>
-                    <p className="pricing-subtitle">
-                        Start for free, upgrade for power. No hidden fees.
-                    </p>
+                    <p className="pricing-subtitle">Start for free, upgrade for power. No hidden fees.</p>
                 </header>
 
                 <div className="pricing-cards">
@@ -112,30 +109,17 @@ const Pricing = () => {
                             </div>
                             <p className="plan-desc">Perfect for trying out the platform.</p>
                         </div>
-
                         <div className="features-list">
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span><strong>100 Free Tokens</strong> on sign up</span>
-                            </div>
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span><strong>5 Tokens</strong> per evaluation</span>
-                            </div>
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span>Basic Answer Analysis</span>
-                            </div>
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span>Community Support</span>
-                            </div>
+                            <div className="feature-item"><span className="check">✓</span><span><strong>100 Free Tokens</strong> on sign up</span></div>
+                            <div className="feature-item"><span className="check">✓</span><span><strong>5 Tokens</strong> per text evaluation</span></div>
+                            <div className="feature-item"><span className="check">✓</span><span><strong>20 Tokens</strong> per image upload</span></div>
+                            <div className="feature-item"><span className="check">✓</span><span>Basic Answer Analysis</span></div>
+                            <div className="feature-item"><span className="check">✓</span><span>Community Support</span></div>
                         </div>
-
                         <button className="plan-btn outline" disabled>Current Plan</button>
                     </div>
 
-                    {/* Premium Plan */}
+                    {/* Pro Plan */}
                     <div className="pricing-card premium">
                         <div className="badge">MOST POPULAR</div>
                         <div className="card-header">
@@ -146,32 +130,15 @@ const Pricing = () => {
                             </div>
                             <p className="plan-desc">For serious aspirants needing daily feedback.</p>
                         </div>
-
                         <div className="features-list">
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span><strong>Unlimited Tokens</strong></span>
-                            </div>
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span>Detailed AI Feedback with Model Answers</span>
-                            </div>
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span>Priority Evaluation Queue</span>
-                            </div>
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span>Performance Analytics Dashboard</span>
-                            </div>
-                            <div className="feature-item">
-                                <span className="check">✓</span>
-                                <span>24/7 Email Support</span>
-                            </div>
+                            <div className="feature-item"><span className="check">✓</span><span><strong>Unlimited Tokens</strong></span></div>
+                            <div className="feature-item"><span className="check">✓</span><span>Detailed AI Feedback with Model Answers</span></div>
+                            <div className="feature-item"><span className="check">✓</span><span>Priority Evaluation Queue</span></div>
+                            <div className="feature-item"><span className="check">✓</span><span>Performance Analytics Dashboard</span></div>
+                            <div className="feature-item"><span className="check">✓</span><span>24/7 Email Support</span></div>
                         </div>
-
                         {user?.isPro ? (
-                            <button className="plan-btn outline" disabled>Active Plan</button>
+                            <button className="plan-btn outline" disabled>Active Plan ✓</button>
                         ) : (
                             <button className="plan-btn solid" onClick={handlePayment}>
                                 Upgrade to Pro 🚀
@@ -183,8 +150,10 @@ const Pricing = () => {
                 <div className="token-info">
                     <h3>How tokens work?</h3>
                     <p>
-                        Every evaluation costs <strong>5 tokens</strong>. You get <strong>100 tokens</strong> for free when you sign up.
-                        Need more? Upgrade to Premium for unlimted access.
+                        Every evaluation costs <strong>5 tokens</strong> for typed text and
+                        <strong> 20 tokens</strong> for handwritten image uploads. You get
+                        <strong> 100 tokens</strong> for free when you sign up. Need more?
+                        Upgrade to Pro for unlimited access.
                     </p>
                 </div>
             </div>

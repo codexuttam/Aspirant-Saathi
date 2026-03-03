@@ -7,26 +7,69 @@ export default function PremiumDetails() {
     const navigate = useNavigate();
     const user = getUser();
 
-    // Since this is static for now, we simulate a join date
     const premiumDate = new Date();
-    // Simulate they joined today (or 1 day ago)
     premiumDate.setDate(premiumDate.getDate() - 1);
     const validUntil = new Date(premiumDate);
     validUntil.setMonth(validUntil.getMonth() + 1);
 
-    const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
-    };
-
+    const formatDate = (date) =>
+        date.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 
     if (!user?.isPro) {
         return (
             <InternalLayout>
-                <div className="premium-details-container">
-                    <div className="premium-card">
-                        <h2>No Premium Access</h2>
-                        <p>You currently do not have a Pro Aspirant subscription.</p>
-                        <button className="premium-btn" onClick={() => navigate("/pricing")}>View Pricing</button>
+                <div className="pd-container">
+                    <div className="pd-upgrade-wrapper">
+                        {/* Crown icon */}
+                        <div className="pd-crown-ring">
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                                <defs>
+                                    <linearGradient id="crownGrad" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stopColor="#fde68a" />
+                                        <stop offset="50%" stopColor="#f59e0b" />
+                                        <stop offset="100%" stopColor="#92400e" />
+                                    </linearGradient>
+                                </defs>
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                                    fill="url(#crownGrad)"
+                                />
+                            </svg>
+                        </div>
+
+                        <h1 className="pd-upgrade-title">Unlock Pro Aspirant</h1>
+                        <p className="pd-upgrade-subtitle">
+                            You're on the free plan. Upgrade to get unlimited AI evaluations,
+                            Batch Studio, priority queue, and deep analytics — everything a
+                            serious aspirant needs to crack the exam.
+                        </p>
+
+                        {/* Feature chips */}
+                        <div className="pd-feature-chips">
+                            {[
+                                "∞ Unlimited Tokens",
+                                "⚡ Priority Queue",
+                                "📊 Deep Analytics",
+                                "📝 Batch Studio",
+                                "🤖 Model Answers",
+                            ].map((f) => (
+                                <span key={f} className="pd-chip">{f}</span>
+                            ))}
+                        </div>
+
+                        {/* Pricing CTA */}
+                        <button
+                            className="pd-cta-btn"
+                            onClick={() => navigate("/pricing")}
+                        >
+                            <span>See Plans &amp; Pricing</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </button>
+
+                        <p className="pd-hint">Cancel anytime · Secure via Razorpay</p>
                     </div>
                 </div>
             </InternalLayout>
@@ -35,72 +78,87 @@ export default function PremiumDetails() {
 
     return (
         <InternalLayout>
-            <div className="premium-details-container">
-                <div className="premium-card premium-active">
-                    <div className="premium-header">
-                        <div className="premium-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="url(#goldGradient)" stroke="none">
+            <div className="pd-container">
+                <div className="pd-pro-card">
+                    <div className="pd-pro-glow" />
+
+                    <div className="pd-pro-header">
+                        <div className="pd-pro-icon">
+                            <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
                                 <defs>
-                                    <linearGradient id="goldGradient" x1="0" y1="0" x2="1" y2="1">
+                                    <linearGradient id="goldGrad2" x1="0" y1="0" x2="1" y2="1">
                                         <stop offset="0%" stopColor="#fef08a" />
                                         <stop offset="50%" stopColor="#eab308" />
                                         <stop offset="100%" stopColor="#854d0e" />
                                     </linearGradient>
                                 </defs>
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                                    fill="url(#goldGrad2)"
+                                />
                             </svg>
                         </div>
-                        <h1 className="premium-title">Pro Aspirant Subscription</h1>
-                        <p className="premium-status">Active & Unlimited</p>
+                        <span className="pd-active-badge">● Active</span>
+                        <h1 className="pd-pro-title">Pro Aspirant</h1>
+                        <p className="pd-pro-sub">Unlimited Access · Premium Member</p>
                     </div>
 
-                    <div className="premium-welcome-box">
-                        <p className="welcome-text">
-                            <strong>Thank you for upgrading, {user.name || "Aspirant"}! 🎖️</strong><br />
-                            We are absolutely thrilled to welcome you to the Pro family. Aspirant-Saathi was built to give edge-case advantages to serious learners who refuse to settle. With your Pro plan, the competition literally doesn’t stand a chance. Now, let’s go secure that rank.
+                    {/* Welcome */}
+                    <div className="pd-welcome">
+                        <p className="pd-welcome-text">
+                            <strong>Welcome to the elite, {user.name || "Aspirant"}! 🎖️</strong>
+                            <br />
+                            Your Pro plan is live. Crush the competition with unlimited AI
+                            evaluations, batch analysis, and priority everything.
                         </p>
-                        <button className="email-action-btn" onClick={() => navigate('/batch-studio')} style={{ cursor: 'pointer' }}>
-                            Explore the Pro Dashboard
+                        <button className="pd-explore-btn" onClick={() => navigate("/batch-studio")}>
+                            Open Batch Studio →
                         </button>
                     </div>
 
-                    <div className="premium-info-grid">
-                        <div className="info-item">
-                            <span className="info-label">Current Plan</span>
-                            <span className="info-value">Pro Aspirant (Monthly)</span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">Member Since</span>
-                            <span className="info-value">{formatDate(premiumDate)}</span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">Valid Until</span>
-                            <span className="info-value">{formatDate(validUntil)}</span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">Remaining Tokens</span>
-                            <span className="info-value text-gradient">Unlimited ∞</span>
-                        </div>
+                    {/* Info grid */}
+                    <div className="pd-info-grid">
+                        {[
+                            { label: "Plan", value: "Pro Aspirant (Monthly)" },
+                            { label: "Member Since", value: formatDate(premiumDate) },
+                            { label: "Valid Until", value: formatDate(validUntil) },
+                            { label: "Tokens", value: "Unlimited ∞", gold: true },
+                        ].map(({ label, value, gold }) => (
+                            <div key={label} className="pd-info-cell">
+                                <span className="pd-info-label">{label}</span>
+                                <span className={`pd-info-value${gold ? " gold" : ""}`}>{value}</span>
+                            </div>
+                        ))}
                     </div>
 
-                    <div className="premium-benefits">
-                        <h3>Your Benefits Unlock:</h3>
-                        <ul>
-                            <li><span className="checkmark">✓</span> <strong>Unlimited Token Access</strong> - No more token recharges</li>
-                            <li><span className="checkmark">✓</span> <strong>Batch Studio</strong> - Bulk evaluation of answers at once</li>
-                            <li><span className="checkmark">✓</span> <strong>Detailed Model Answers</strong> - Access to top-tier AI generated answers</li>
-                            <li><span className="checkmark">✓</span> <strong>Priority Queue</strong> - Get your evaluations before anyone else</li>
-                            <li><span className="checkmark">✓</span> <strong>Deep Performance Analytics</strong> - See overall streak & trends</li>
+                    {/* Benefits */}
+                    <div className="pd-benefits">
+                        <h3 className="pd-benefits-title">Your Pro Benefits</h3>
+                        <ul className="pd-benefits-list">
+                            {[
+                                ["Unlimited Token Access", "No more recharges, ever"],
+                                ["Batch Studio", "Evaluate answers in bulk instantly"],
+                                ["Model AI Answers", "Top-tier reference answers on demand"],
+                                ["Priority Queue", "Your evaluations go first"],
+                                ["Deep Analytics", "Streak, trends & performance dashboard"],
+                            ].map(([title, desc]) => (
+                                <li key={title} className="pd-benefit-item">
+                                    <span className="pd-check">✓</span>
+                                    <div>
+                                        <strong>{title}</strong>
+                                        <span className="pd-benefit-desc"> — {desc}</span>
+                                    </div>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
-                    <div className="premium-footer">
-                        <div className="support-box">
-                            <p>Having issues or need a refund?</p>
-                            <button className="support-link-btn" onClick={() => navigate('/refund-policy')}>
-                                View Refund Policy & Support
-                            </button>
-                        </div>
+                    {/* Footer */}
+                    <div className="pd-pro-footer">
+                        <p className="pd-footer-text">Need help or want a refund?</p>
+                        <button className="pd-refund-btn" onClick={() => navigate("/refund-policy")}>
+                            Refund Policy &amp; Support
+                        </button>
                     </div>
                 </div>
             </div>
