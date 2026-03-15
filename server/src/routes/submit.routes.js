@@ -18,6 +18,7 @@ router.post(
   upload.single("answerImage"),
   async (req, res) => {
     try {
+      console.log("SUBMISSION RECEIVED:", req.body.question);
       const { question, exam, answerText } = req.body;
 
       // 🔒 Validation
